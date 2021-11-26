@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 
 #import "FlutterBinaryMessenger.h"
-#import "FlutterDartProject.h"
+#import "FlutterDartProjectSDK.h"
 #import "FlutterMacros.h"
-#import "FlutterPlugin.h"
+#import "FlutterPluginSDK.h"
 #import "FlutterTexture.h"
 
-@class FlutterViewController;
+@class FlutterViewControllerSDK;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,134 +30,134 @@ extern NSString* const FlutterDefaultDartEntrypoint;
 extern NSString* const FlutterDefaultInitialRoute;
 
 /**
- * The FlutterEngine class coordinates a single instance of execution for a
- * `FlutterDartProject`.  It may have zero or one `FlutterViewController` at a
+ * The FlutterEngineSDK class coordinates a single instance of execution for a
+ * `FlutterDartProjectSDK`.  It may have zero or one `FlutterViewControllerSDK` at a
  * time, which can be specified via `-setViewController:`.
- * `FlutterViewController`'s `initWithEngine` initializer will automatically call
+ * `FlutterViewControllerSDK`'s `initWithEngine` initializer will automatically call
  * `-setViewController:` for itself.
  *
- * A FlutterEngine can be created independently of a `FlutterViewController` for
+ * A FlutterEngineSDK can be created independently of a `FlutterViewControllerSDK` for
  * headless execution.  It can also persist across the lifespan of multiple
- * `FlutterViewController` instances to maintain state and/or asynchronous tasks
+ * `FlutterViewControllerSDK` instances to maintain state and/or asynchronous tasks
  * (such as downloading a large file).
  *
- * A FlutterEngine can also be used to prewarm the Dart execution environment and reduce the
- * latency of showing the Flutter screen when a `FlutterViewController` is created and presented.
+ * A FlutterEngineSDK can also be used to prewarm the Dart execution environment and reduce the
+ * latency of showing the Flutter screen when a `FlutterViewControllerSDK` is created and presented.
  * See http://flutter.dev/docs/development/add-to-app/performance for more details on loading
  * performance.
  *
- * Alternatively, you can simply create a new `FlutterViewController` with only a
- * `FlutterDartProject`. That `FlutterViewController` will internally manage its
- * own instance of a FlutterEngine, but will not guarantee survival of the engine
+ * Alternatively, you can simply create a new `FlutterViewControllerSDK` with only a
+ * `FlutterDartProjectSDK`. That `FlutterViewControllerSDK` will internally manage its
+ * own instance of a FlutterEngineSDK, but will not guarantee survival of the engine
  * beyond the life of the ViewController.
  *
- * A newly initialized FlutterEngine will not actually run a Dart Isolate until
+ * A newly initialized FlutterEngineSDK will not actually run a Dart Isolate until
  * either `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI` is invoked.
  * One of these methods must be invoked before calling `-setViewController:`.
  */
 FLUTTER_DARWIN_EXPORT
-@interface FlutterEngine : NSObject <FlutterTextureRegistry, FlutterPluginRegistry>
+@interface FlutterEngineSDK : NSObject <FlutterTextureRegistry, FlutterPluginRegistrySDK>
 
 /**
- * Default initializer for a FlutterEngine.
+ * Default initializer for a FlutterEngineSDK.
  *
- * Threads created by this FlutterEngine will appear as "FlutterEngine #" in
+ * Threads created by this FlutterEngineSDK will appear as "FlutterEngineSDK #" in
  * Instruments. The prefix can be customized using `initWithName`.
  *
  * The engine will execute the project located in the bundle with the identifier
- * "io.flutter.flutter.app" (the default for Flutter projects).
+ * "io.flutter.flutter.app--sdk" (the default for Flutter projects).
  *
  * A newly initialized engine will not run until either `-runWithEntrypoint:` or
  * `-runWithEntrypoint:libraryURI:` is called.
  *
- * FlutterEngine created with this method will have allowHeadlessExecution set to `YES`.
- * This means that the engine will continue to run regardless of whether a `FlutterViewController`
+ * FlutterEngineSDK created with this method will have allowHeadlessExecution set to `YES`.
+ * This means that the engine will continue to run regardless of whether a `FlutterViewControllerSDK`
  * is attached to it or not, until `-destroyContext:` is called or the process finishes.
  */
 - (instancetype)init;
 
 /**
- * Initialize this FlutterEngine.
+ * Initialize this FlutterEngineSDK.
  *
  * The engine will execute the project located in the bundle with the identifier
- * "io.flutter.flutter.app" (the default for Flutter projects).
+ * "io.flutter.flutter.app--sdk" (the default for Flutter projects).
  *
  * A newly initialized engine will not run until either `-runWithEntrypoint:` or
  * `-runWithEntrypoint:libraryURI:` is called.
  *
- * FlutterEngine created with this method will have allowHeadlessExecution set to `YES`.
- * This means that the engine will continue to run regardless of whether a `FlutterViewController`
+ * FlutterEngineSDK created with this method will have allowHeadlessExecution set to `YES`.
+ * This means that the engine will continue to run regardless of whether a `FlutterViewControllerSDK`
  * is attached to it or not, until `-destroyContext:` is called or the process finishes.
  *
  * @param labelPrefix The label prefix used to identify threads for this instance. Should
- *   be unique across FlutterEngine instances, and is used in instrumentation to label
- *   the threads used by this FlutterEngine.
+ *   be unique across FlutterEngineSDK instances, and is used in instrumentation to label
+ *   the threads used by this FlutterEngineSDK.
  */
 - (instancetype)initWithName:(NSString*)labelPrefix;
 
 /**
- * Initialize this FlutterEngine with a `FlutterDartProject`.
+ * Initialize this FlutterEngineSDK with a `FlutterDartProjectSDK`.
  *
- * If the FlutterDartProject is not specified, the FlutterEngine will attempt to locate
+ * If the FlutterDartProjectSDK is not specified, the FlutterEngineSDK will attempt to locate
  * the project in a default location (the flutter_assets folder in the iOS application
  * bundle).
  *
- * A newly initialized engine will not run the `FlutterDartProject` until either
+ * A newly initialized engine will not run the `FlutterDartProjectSDK` until either
  * `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI:` is called.
  *
- * FlutterEngine created with this method will have allowHeadlessExecution set to `YES`.
- * This means that the engine will continue to run regardless of whether a `FlutterViewController`
+ * FlutterEngineSDK created with this method will have allowHeadlessExecution set to `YES`.
+ * This means that the engine will continue to run regardless of whether a `FlutterViewControllerSDK`
  * is attached to it or not, until `-destroyContext:` is called or the process finishes.
  *
  * @param labelPrefix The label prefix used to identify threads for this instance. Should
- *   be unique across FlutterEngine instances, and is used in instrumentation to label
- *   the threads used by this FlutterEngine.
- * @param project The `FlutterDartProject` to run.
+ *   be unique across FlutterEngineSDK instances, and is used in instrumentation to label
+ *   the threads used by this FlutterEngineSDK.
+ * @param project The `FlutterDartProjectSDK` to run.
  */
-- (instancetype)initWithName:(NSString*)labelPrefix project:(nullable FlutterDartProject*)project;
+- (instancetype)initWithName:(NSString*)labelPrefix project:(nullable FlutterDartProjectSDK*)project;
 
 /**
- * Initialize this FlutterEngine with a `FlutterDartProject`.
+ * Initialize this FlutterEngineSDK with a `FlutterDartProjectSDK`.
  *
- * If the FlutterDartProject is not specified, the FlutterEngine will attempt to locate
+ * If the FlutterDartProjectSDK is not specified, the FlutterEngineSDK will attempt to locate
  * the project in a default location (the flutter_assets folder in the iOS application
  * bundle).
  *
- * A newly initialized engine will not run the `FlutterDartProject` until either
+ * A newly initialized engine will not run the `FlutterDartProjectSDK` until either
  * `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI:` is called.
  *
  * @param labelPrefix The label prefix used to identify threads for this instance. Should
- *   be unique across FlutterEngine instances, and is used in instrumentation to label
- *   the threads used by this FlutterEngine.
- * @param project The `FlutterDartProject` to run.
+ *   be unique across FlutterEngineSDK instances, and is used in instrumentation to label
+ *   the threads used by this FlutterEngineSDK.
+ * @param project The `FlutterDartProjectSDK` to run.
  * @param allowHeadlessExecution Whether or not to allow this instance to continue
- *   running after passing a nil `FlutterViewController` to `-setViewController:`.
+ *   running after passing a nil `FlutterViewControllerSDK` to `-setViewController:`.
  */
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(nullable FlutterDartProject*)project
+                     project:(nullable FlutterDartProjectSDK*)project
       allowHeadlessExecution:(BOOL)allowHeadlessExecution;
 
 /**
- * Initialize this FlutterEngine with a `FlutterDartProject`.
+ * Initialize this FlutterEngineSDK with a `FlutterDartProjectSDK`.
  *
- * If the FlutterDartProject is not specified, the FlutterEngine will attempt to locate
+ * If the FlutterDartProjectSDK is not specified, the FlutterEngineSDK will attempt to locate
  * the project in a default location (the flutter_assets folder in the iOS application
  * bundle).
  *
- * A newly initialized engine will not run the `FlutterDartProject` until either
+ * A newly initialized engine will not run the `FlutterDartProjectSDK` until either
  * `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI:` is called.
  *
  * @param labelPrefix The label prefix used to identify threads for this instance. Should
- *   be unique across FlutterEngine instances, and is used in instrumentation to label
- *   the threads used by this FlutterEngine.
- * @param project The `FlutterDartProject` to run.
+ *   be unique across FlutterEngineSDK instances, and is used in instrumentation to label
+ *   the threads used by this FlutterEngineSDK.
+ * @param project The `FlutterDartProjectSDK` to run.
  * @param allowHeadlessExecution Whether or not to allow this instance to continue
- *   running after passing a nil `FlutterViewController` to `-setViewController:`.
+ *   running after passing a nil `FlutterViewControllerSDK` to `-setViewController:`.
  * @param restorationEnabled Whether state restoration is enabled. When true, the framework will
  *   wait for the attached view controller to provide restoration data.
  */
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(nullable FlutterDartProject*)project
+                     project:(nullable FlutterDartProjectSDK*)project
       allowHeadlessExecution:(BOOL)allowHeadlessExecution
           restorationEnabled:(BOOL)restorationEnabled NS_DESIGNATED_INITIALIZER;
 
@@ -249,7 +249,7 @@ FLUTTER_DARWIN_EXPORT
 /**
  * Destroy running context for an engine.
  *
- * This method can be used to force the FlutterEngine object to release all resources.
+ * This method can be used to force the FlutterEngineSDK object to release all resources.
  * After sending this message, the object will be in an unusable state until it is deallocated.
  * Accessing properties or sending messages to it will result in undefined behavior or runtime
  * errors.
@@ -276,27 +276,27 @@ FLUTTER_DARWIN_EXPORT
  *
  * You can subscribe to semantics updates via `NSNotificationCenter` by adding
  * an observer for the name `FlutterSemanticsUpdateNotification`.  The `object`
- * parameter will be the `FlutterViewController` associated with the semantics
+ * parameter will be the `FlutterViewControllerSDK` associated with the semantics
  * update.  This will asynchronously fire after a semantics tree has actually
  * built (which may be some time after the frame has been rendered).
  */
 - (void)ensureSemanticsEnabled;
 
 /**
- * Sets the `FlutterViewController` for this instance.  The FlutterEngine must be
+ * Sets the `FlutterViewControllerSDK` for this instance.  The FlutterEngineSDK must be
  * running (e.g. a successful call to `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI`)
  * before calling this method. Callers may pass nil to remove the viewController
  * and have the engine run headless in the current process.
  *
- * A FlutterEngine can only have one `FlutterViewController` at a time. If there is
- * already a `FlutterViewController` associated with this instance, this method will replace
+ * A FlutterEngineSDK can only have one `FlutterViewControllerSDK` at a time. If there is
+ * already a `FlutterViewControllerSDK` associated with this instance, this method will replace
  * the engine's current viewController with the newly specified one.
  *
  * Setting the viewController will signal the engine to start animations and drawing, and unsetting
  * it will signal the engine to stop animations and drawing.  However, neither will impact the state
  * of the Dart program's execution.
  */
-@property(nonatomic, weak) FlutterViewController* viewController;
+@property(nonatomic, weak) FlutterViewControllerSDK* viewController;
 
 /**
  * The `FlutterMethodChannel` used for localization related platform messages, such as
@@ -393,7 +393,7 @@ FLUTTER_DARWIN_EXPORT
 @property(nonatomic, readonly, nullable) NSURL* observatoryUrl;
 
 /**
- * The `FlutterBinaryMessenger` associated with this FlutterEngine (used for communicating with
+ * The `FlutterBinaryMessenger` associated with this FlutterEngineSDK (used for communicating with
  * channels).
  */
 @property(nonatomic, readonly) NSObject<FlutterBinaryMessenger>* binaryMessenger;

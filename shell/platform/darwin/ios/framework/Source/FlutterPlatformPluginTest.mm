@@ -7,7 +7,7 @@
 
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterBinaryMessenger.h"
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterMacros.h"
-#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPlugin.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPluginSDK.h"
 #import "flutter/shell/platform/darwin/ios/platform_view_ios.h"
 
 @interface FlutterPlatformPluginTest : XCTestCase
@@ -16,11 +16,11 @@
 @implementation FlutterPlatformPluginTest
 
 - (void)testHasStrings {
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"test" project:nil];
-  std::unique_ptr<fml::WeakPtrFactory<FlutterEngine>> _weakFactory =
-      std::make_unique<fml::WeakPtrFactory<FlutterEngine>>(engine);
-  FlutterPlatformPlugin* plugin =
-      [[FlutterPlatformPlugin alloc] initWithEngine:_weakFactory->GetWeakPtr()];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"test" project:nil];
+  std::unique_ptr<fml::WeakPtrFactory<FlutterEngineSDK>> _weakFactory =
+      std::make_unique<fml::WeakPtrFactory<FlutterEngineSDK>>(engine);
+  FlutterPlatformPluginSDK* plugin =
+      [[FlutterPlatformPluginSDK alloc] initWithEngine:_weakFactory->GetWeakPtr()];
 
   // Set some string to the pasteboard.
   __block bool calledSet = false;

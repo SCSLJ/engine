@@ -21,13 +21,13 @@
  * Coordinates a single instance of execution of a Flutter engine.
  */
 FLUTTER_DARWIN_EXPORT
-@interface FlutterEngine : NSObject <FlutterTextureRegistry, FlutterPluginRegistry>
+@interface FlutterEngineSDK : NSObject <FlutterTextureRegistry, FlutterPluginRegistry>
 
 /**
  * Initializes an engine with the given project.
  *
  * @param labelPrefix Currently unused; in the future, may be used for labelling threads
- *                    as with the iOS FlutterEngine.
+ *                    as with the iOS FlutterEngineSDK.
  * @param project The project configuration. If nil, a default FlutterDartProject will be used.
  */
 - (nonnull instancetype)initWithName:(nonnull NSString*)labelPrefix
@@ -37,7 +37,7 @@ FLUTTER_DARWIN_EXPORT
  * Initializes an engine that can run headlessly with the given project.
  *
  * @param labelPrefix Currently unused; in the future, may be used for labelling threads
- *                    as with the iOS FlutterEngine.
+ *                    as with the iOS FlutterEngineSDK.
  * @param project The project configuration. If nil, a default FlutterDartProject will be used.
  */
 - (nonnull instancetype)initWithName:(nonnull NSString*)labelPrefix
@@ -73,8 +73,8 @@ FLUTTER_DARWIN_EXPORT
 @property(nonatomic, nonnull, readonly) id<FlutterBinaryMessenger> binaryMessenger;
 
 /**
- * Shuts the Flutter engine if it is running. The FlutterEngine instance must always be shutdown
- * before it may be collected. Not shutting down the FlutterEngine instance before releasing it will
+ * Shuts the Flutter engine if it is running. The FlutterEngineSDK instance must always be shutdown
+ * before it may be collected. Not shutting down the FlutterEngineSDK instance before releasing it will
  * result in the leak of that engine instance.
  */
 - (void)shutDownEngine;

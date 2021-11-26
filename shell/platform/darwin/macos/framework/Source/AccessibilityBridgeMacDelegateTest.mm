@@ -13,7 +13,7 @@ namespace {
 
 class AccessibilityBridgeMacDelegateSpy : public AccessibilityBridgeMacDelegate {
  public:
-  AccessibilityBridgeMacDelegateSpy(__weak FlutterEngine* flutter_engine,
+  AccessibilityBridgeMacDelegateSpy(__weak FlutterEngineSDK* flutter_engine,
                                     __weak FlutterViewController* view_controller)
       : AccessibilityBridgeMacDelegate(flutter_engine, view_controller) {}
 
@@ -27,18 +27,18 @@ class AccessibilityBridgeMacDelegateSpy : public AccessibilityBridgeMacDelegate 
 };
 
 // Returns an engine configured for the text fixture resource configuration.
-FlutterEngine* CreateTestEngine() {
+FlutterEngineSDK* CreateTestEngine() {
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
-  return [[FlutterEngine alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
+  return [[FlutterEngineSDK alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
 }
 }  // namespace
 
 TEST(AccessibilityBridgeMacDelegateTest,
      sendsAccessibilityCreateNotificationToWindowOfFlutterView) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
@@ -96,7 +96,7 @@ TEST(AccessibilityBridgeMacDelegateTest,
 }
 
 TEST(AccessibilityBridgeMacDelegateTest, doesNotSendAccessibilityCreateNotificationWhenHeadless) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
@@ -147,7 +147,7 @@ TEST(AccessibilityBridgeMacDelegateTest, doesNotSendAccessibilityCreateNotificat
 }
 
 TEST(AccessibilityBridgeMacDelegateTest, doesNotSendAccessibilityCreateNotificationWhenNoWindow) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   // Create a view controller without attaching it to a window.
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]

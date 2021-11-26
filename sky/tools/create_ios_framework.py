@@ -16,7 +16,7 @@ DSYMUTIL = os.path.join(os.path.dirname(__file__), '..', '..', '..',
                         'buildtools', 'mac-x64', 'clang', 'bin', 'dsymutil')
 
 def main():
-  parser = argparse.ArgumentParser(description='Creates Flutter.framework and Flutter.xcframework')
+  parser = argparse.ArgumentParser(description='Creates FlutterSDK.framework and FlutterSDK.xcframework')
 
   parser.add_argument('--dst', type=str, required=True)
   parser.add_argument('--arm64-out-dir', type=str, required=True)
@@ -30,18 +30,18 @@ def main():
 
   args = parser.parse_args()
 
-  fat_framework = os.path.join(args.dst, 'Flutter.framework')
-  fat_simulator_framework = os.path.join(args.dst, 'sim', 'Flutter.framework')
-  arm64_framework = os.path.join(args.arm64_out_dir, 'Flutter.framework')
-  armv7_framework = os.path.join(args.armv7_out_dir, 'Flutter.framework')
-  simulator_x64_framework = os.path.join(args.simulator_x64_out_dir, 'Flutter.framework')
+  fat_framework = os.path.join(args.dst, 'FlutterSDK.framework')
+  fat_simulator_framework = os.path.join(args.dst, 'sim', 'FlutterSDK.framework')
+  arm64_framework = os.path.join(args.arm64_out_dir, 'FlutterSDK.framework')
+  armv7_framework = os.path.join(args.armv7_out_dir, 'FlutterSDK.framework')
+  simulator_x64_framework = os.path.join(args.simulator_x64_out_dir, 'FlutterSDK.framework')
   if args.simulator_arm64_out_dir is not None:
-    simulator_arm64_framework = os.path.join(args.simulator_arm64_out_dir, 'Flutter.framework')
+    simulator_arm64_framework = os.path.join(args.simulator_arm64_out_dir, 'FlutterSDK.framework')
     simulator_arm64_dylib = os.path.join(simulator_arm64_framework, 'Flutter')
 
-  arm64_dylib = os.path.join(arm64_framework, 'Flutter')
-  armv7_dylib = os.path.join(armv7_framework, 'Flutter')
-  simulator_x64_dylib = os.path.join(simulator_x64_framework, 'Flutter')
+  arm64_dylib = os.path.join(arm64_framework, 'FlutterSDK')
+  armv7_dylib = os.path.join(armv7_framework, 'FlutterSDK')
+  simulator_x64_dylib = os.path.join(simulator_x64_framework, 'FlutterSDK')
 
   if not os.path.isdir(arm64_framework):
     print('Cannot find iOS arm64 Framework at %s' % arm64_framework)
@@ -74,7 +74,7 @@ def main():
   shutil.rmtree(fat_framework, True)
   shutil.copytree(arm64_framework, fat_framework)
 
-  fat_framework_binary = os.path.join(fat_framework, 'Flutter')
+  fat_framework_binary = os.path.join(fat_framework, 'FlutterSDK')
 
   # Create the arm-only fat framework.
   subprocess.check_call([
@@ -91,7 +91,7 @@ def main():
     shutil.rmtree(fat_simulator_framework, True)
     shutil.copytree(simulator_arm64_framework, fat_simulator_framework)
 
-    fat_simulator_framework_binary = os.path.join(fat_simulator_framework, 'Flutter')
+    fat_simulator_framework_binary = os.path.join(fat_simulator_framework, 'FlutterSDK')
 
     # Create the arm64/x64 simulator fat framework.
     subprocess.check_call([
@@ -110,7 +110,7 @@ def main():
   # Create XCFramework from the arm-only fat framework and the arm64/x64 simulator frameworks, or just the
   # x64 simulator framework if only that one exists.
   xcframeworks = [simulator_framework, fat_framework]
-  create_xcframework(location=args.dst, name='Flutter', frameworks=xcframeworks)
+  create_xcframework(location=args.dst, name='FlutterSDK', frameworks=xcframeworks)
 
   # Add the x64 simulator into the fat framework
   subprocess.check_call([

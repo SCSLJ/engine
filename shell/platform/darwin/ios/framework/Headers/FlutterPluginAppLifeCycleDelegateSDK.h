@@ -5,7 +5,7 @@
 #ifndef FLUTTER_FLUTTERPLUGINAPPLIFECYCLEDELEGATE_H_
 #define FLUTTER_FLUTTERPLUGINAPPLIFECYCLEDELEGATE_H_
 
-#import "FlutterPlugin.h"
+#import "FlutterPluginSDK.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Propagates `UIAppDelegate` callbacks to registered plugins.
  */
 FLUTTER_DARWIN_EXPORT
-@interface FlutterPluginAppLifeCycleDelegate : NSObject
+@interface FlutterPluginAppLifeCycleDelegateSDK : NSObject
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
                                                <UNUserNotificationCenterDelegate>
 #endif

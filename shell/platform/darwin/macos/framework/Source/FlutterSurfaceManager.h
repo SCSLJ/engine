@@ -58,7 +58,7 @@
 @end
 
 /**
- * Manages IOSurfaces for the FlutterEngine to render to.
+ * Manages IOSurfaces for the FlutterEngineSDK to render to.
  *
  * The backing store when rendering with OpenGL is a frame buffer backed by a texture, on Metal its
  * a Metal texture. There are two IOSurfaces created during initialization, FlutterSurfaceManager

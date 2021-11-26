@@ -10,7 +10,7 @@
 #import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPlatformViews.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformViews_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterSemanticsScrollView.h"
-#import "flutter/shell/platform/darwin/ios/framework/Source/accessibility_bridge.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/accessibility_bridge_sdk.h"
 #import "flutter/shell/platform/darwin/ios/platform_view_ios.h"
 
 FLUTTER_ASSERT_NOT_ARC
@@ -104,7 +104,7 @@ class MockDelegate : public PlatformView::Delegate {
 class MockIosDelegate : public AccessibilityBridge::IosDelegate {
  public:
   bool IsFlutterViewControllerPresentingModalViewController(
-      FlutterViewController* view_controller) override {
+      FlutterViewControllerSDK* view_controller) override {
     return result_IsFlutterViewControllerPresentingModalViewController_;
   };
 
@@ -167,8 +167,8 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
-  OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
+  OCMStub([mockFlutterViewControllerSDK view]).andReturn(mockFlutterView);
   OCMExpect([mockFlutterView setAccessibilityElements:[OCMArg isNil]]);
   auto bridge =
       std::make_unique<flutter::AccessibilityBridge>(/*view_controller=*/mockFlutterViewController,
@@ -194,8 +194,8 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
-  OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
+  OCMStub([mockFlutterViewControllerSDK view]).andReturn(mockFlutterView);
   std::string label = "some label";
 
   __block auto bridge =
@@ -239,12 +239,12 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
-  OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
-  OCMStub([mockFlutterViewController isVoiceOverRunning]).andReturn(YES);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
+  OCMStub([mockFlutterViewControllerSDK view]).andReturn(mockFlutterView);
+  OCMStub([mockFlutterViewControllerSDK isVoiceOverRunning]).andReturn(YES);
 
   __block auto bridge =
-      std::make_unique<flutter::AccessibilityBridge>(/*view_controller=*/mockFlutterViewController,
+      std::make_unique<flutter::AccessibilityBridge>(/*view_controller=*/mockFlutterViewControllerSDK,
                                                      /*platform_view=*/platform_view.get(),
                                                      /*platform_views_controller=*/nil);
 
@@ -269,7 +269,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
         /*platform_views_controller=*/flutterPlatformViewsController,
         /*task_runners=*/runners);
     id mockFlutterView = OCMClassMock([FlutterView class]);
-    id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+    id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
     OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
     std::string label = "some label";
     flutterPlatformViewsController->SetFlutterView(mockFlutterView);
@@ -320,8 +320,8 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*rendering_api=*/flutter::IOSRenderingAPI::kSoftware,
       /*platform_views_controller=*/flutterPlatformViewsController,
       /*task_runners=*/runners);
-  id engine = OCMClassMock([FlutterEngine class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id engine = OCMClassMock([FlutterEngineSDK class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   FlutterView* flutterView = [[FlutterView alloc] initWithDelegate:engine opaque:YES];
   OCMStub([mockFlutterViewController view]).andReturn(flutterView);
   std::string label = "some label";
@@ -387,8 +387,8 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*rendering_api=*/flutter::IOSRenderingAPI::kSoftware,
       /*platform_views_controller=*/flutterPlatformViewsController,
       /*task_runners=*/runners);
-  id engine = OCMClassMock([FlutterEngine class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id engine = OCMClassMock([FlutterEngineSDK class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   FlutterView* flutterView = [[FlutterView alloc] initWithDelegate:engine opaque:YES];
   OCMStub([mockFlutterViewController view]).andReturn(flutterView);
   std::string label = "some label";
@@ -455,7 +455,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -521,7 +521,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -603,7 +603,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -675,8 +675,8 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
-  OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
+  OCMStub([mockFlutterViewControllerSDK view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
       [[[NSMutableArray alloc] init] autorelease];
@@ -771,7 +771,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -855,7 +855,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -945,7 +945,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -1012,7 +1012,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*rendering_api=*/flutter::IOSRenderingAPI::kSoftware,
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   id mockFlutterView = OCMClassMock([FlutterView class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
@@ -1079,7 +1079,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*rendering_api=*/flutter::IOSRenderingAPI::kSoftware,
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   id mockFlutterView = OCMClassMock([FlutterView class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
@@ -1152,7 +1152,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*rendering_api=*/flutter::IOSRenderingAPI::kSoftware,
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   id mockFlutterView = OCMClassMock([FlutterView class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
@@ -1227,7 +1227,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*rendering_api=*/flutter::IOSRenderingAPI::kSoftware,
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   id mockFlutterView = OCMClassMock([FlutterView class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
@@ -1298,7 +1298,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*rendering_api=*/flutter::IOSRenderingAPI::kSoftware,
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   id mockFlutterView = OCMClassMock([FlutterView class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
@@ -1372,7 +1372,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
   std::string label = "some label";
 
@@ -1427,7 +1427,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -1487,7 +1487,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   NSMutableArray<NSDictionary<NSString*, id>*>* accessibility_notifications =
@@ -1539,8 +1539,8 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
                                /*ui=*/thread_task_runner,
                                /*io=*/thread_task_runner);
   id messenger = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
-  id engine = OCMClassMock([FlutterEngine class]);
-  id flutterViewController = OCMClassMock([FlutterViewController class]);
+  id engine = OCMClassMock([FlutterEngineSDK class]);
+  id flutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
 
   OCMStub([flutterViewController engine]).andReturn(engine);
   OCMStub([engine binaryMessenger]).andReturn(messenger);
@@ -1557,7 +1557,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
   fml::AutoResetWaitableEvent latch;
   thread_task_runner->PostTask([&] {
     auto weakFactory =
-        std::make_unique<fml::WeakPtrFactory<FlutterViewController>>(flutterViewController);
+        std::make_unique<fml::WeakPtrFactory<FlutterViewControllerSDK>>(flutterViewController);
     platform_view->SetOwnerViewController(weakFactory->GetWeakPtr());
     auto bridge =
         std::make_unique<flutter::AccessibilityBridge>(/*view=*/nil,
@@ -1588,7 +1588,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       /*platform_views_controller=*/nil,
       /*task_runners=*/runners);
   id mockFlutterView = OCMClassMock([FlutterView class]);
-  id mockFlutterViewController = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewController = OCMClassMock([FlutterViewControllerSDK class]);
   OCMStub([mockFlutterViewController view]).andReturn(mockFlutterView);
 
   auto ios_delegate = std::make_unique<flutter::MockIosDelegate>();

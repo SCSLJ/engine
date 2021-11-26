@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterAppDelegate.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterAppDelegateSDK.h"
 
 #import "flutter/fml/logging.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPluginAppLifeCycleDelegate.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPluginAppLifeCycleDelegateSDK.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterAppDelegate_Test.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterEngine_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPluginAppLifeCycleDelegate_internal.h"
@@ -16,17 +16,17 @@ static NSString* const kRemoteNotificationCapabitiliy = @"remote-notification";
 static NSString* const kBackgroundFetchCapatibility = @"fetch";
 static NSString* const kRestorationStateAppModificationKey = @"mod-date";
 
-@interface FlutterAppDelegate ()
-@property(nonatomic, copy) FlutterViewController* (^rootFlutterViewControllerGetter)(void);
+@interface FlutterAppDelegateSDK ()
+@property(nonatomic, copy) FlutterViewControllerSDK* (^rootFlutterViewControllerGetter)(void);
 @end
 
-@implementation FlutterAppDelegate {
-  FlutterPluginAppLifeCycleDelegate* _lifeCycleDelegate;
+@implementation FlutterAppDelegateSDK {
+  FlutterPluginAppLifeCycleDelegateSDK* _lifeCycleDelegate;
 }
 
 - (instancetype)init {
   if (self = [super init]) {
-    _lifeCycleDelegate = [[FlutterPluginAppLifeCycleDelegate alloc] init];
+    _lifeCycleDelegate = [[FlutterPluginAppLifeCycleDelegateSDK alloc] init];
   }
   return self;
 }
@@ -50,13 +50,13 @@ static NSString* const kRestorationStateAppModificationKey = @"mod-date";
 
 // Returns the key window's rootViewController, if it's a FlutterViewController.
 // Otherwise, returns nil.
-- (FlutterViewController*)rootFlutterViewController {
+- (FlutterViewControllerSDK*)rootFlutterViewController {
   if (_rootFlutterViewControllerGetter != nil) {
     return _rootFlutterViewControllerGetter();
   }
   UIViewController* rootViewController = _window.rootViewController;
-  if ([rootViewController isKindOfClass:[FlutterViewController class]]) {
-    return (FlutterViewController*)rootViewController;
+  if ([rootViewController isKindOfClass:[FlutterViewControllerSDK class]]) {
+    return (FlutterViewControllerSDK*)rootViewController;
   }
   return nil;
 }
@@ -146,7 +146,7 @@ static NSString* const kRestorationStateAppModificationKey = @"mod-date";
     // Not set or NO.
     return NO;
   } else {
-    FlutterViewController* flutterViewController = [self rootFlutterViewController];
+    FlutterViewControllerSDK* flutterViewController = [self rootFlutterViewController];
     if (flutterViewController) {
       [flutterViewController.engine
           waitForFirstFrame:3.0
@@ -231,10 +231,10 @@ static NSString* const kRestorationStateAppModificationKey = @"mod-date";
   return [self openURL:userActivity.webpageURL];
 }
 
-#pragma mark - FlutterPluginRegistry methods. All delegating to the rootViewController
+#pragma mark - FlutterPluginRegistrySDK methods. All delegating to the rootViewController
 
 - (NSObject<FlutterPluginRegistrar>*)registrarForPlugin:(NSString*)pluginKey {
-  FlutterViewController* flutterRootViewController = [self rootFlutterViewController];
+  FlutterViewControllerSDK* flutterRootViewController = [self rootFlutterViewController];
   if (flutterRootViewController) {
     return [[flutterRootViewController pluginRegistry] registrarForPlugin:pluginKey];
   }
@@ -242,7 +242,7 @@ static NSString* const kRestorationStateAppModificationKey = @"mod-date";
 }
 
 - (BOOL)hasPlugin:(NSString*)pluginKey {
-  FlutterViewController* flutterRootViewController = [self rootFlutterViewController];
+  FlutterViewControllerSDK* flutterRootViewController = [self rootFlutterViewController];
   if (flutterRootViewController) {
     return [[flutterRootViewController pluginRegistry] hasPlugin:pluginKey];
   }
@@ -250,7 +250,7 @@ static NSString* const kRestorationStateAppModificationKey = @"mod-date";
 }
 
 - (NSObject*)valuePublishedByPlugin:(NSString*)pluginKey {
-  FlutterViewController* flutterRootViewController = [self rootFlutterViewController];
+  FlutterViewControllerSDK* flutterRootViewController = [self rootFlutterViewController];
   if (flutterRootViewController) {
     return [[flutterRootViewController pluginRegistry] valuePublishedByPlugin:pluginKey];
   }

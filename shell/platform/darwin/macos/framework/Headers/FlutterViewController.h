@@ -31,7 +31,7 @@ FLUTTER_DARWIN_EXPORT
 /**
  * The Flutter engine associated with this view controller.
  */
-@property(nonatomic, nonnull, readonly) FlutterEngine* engine;
+@property(nonatomic, nonnull, readonly) FlutterEngineSDK* engine;
 
 /**
  * The style of mouse tracking to use for the view. Defaults to

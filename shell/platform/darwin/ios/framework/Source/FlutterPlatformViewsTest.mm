@@ -8,7 +8,7 @@
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterBinaryMessenger.h"
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterMacros.h"
 #import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPlatformViews.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformViews_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterViewController_Internal.h"
 #import "flutter/shell/platform/darwin/ios/platform_view_ios.h"
@@ -626,7 +626,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
   // Before setting flutter view controller, events are not dispatched.
   NSSet* touches1 = [[[NSSet alloc] init] autorelease];
   id event1 = OCMClassMock([UIEvent class]);
-  id mockFlutterViewContoller = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewContoller = OCMClassMock([FlutterViewControllerSDK class]);
   [forwardGectureRecognizer touchesBegan:touches1 withEvent:event1];
   OCMReject([mockFlutterViewContoller touchesBegan:touches1 withEvent:event1]);
 
@@ -684,7 +684,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       break;
     }
   }
-  id mockFlutterViewContoller = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewContoller = OCMClassMock([FlutterViewControllerSDK class]);
   {
     // ***** Sequence 1, finishing touch event with touchEnded ***** //
     flutterPlatformViewsController->SetFlutterViewController(mockFlutterViewContoller);
@@ -803,7 +803,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       break;
     }
   }
-  id mockFlutterViewContoller = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewContoller = OCMClassMock([FlutterViewControllerSDK class]);
 
   flutterPlatformViewsController->SetFlutterViewController(mockFlutterViewContoller);
 
@@ -816,7 +816,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
   UIViewController* mockFlutterViewContoller2 = OCMClassMock([UIViewController class]);
   flutterPlatformViewsController->SetFlutterViewController(mockFlutterViewContoller2);
 
-  // Touch events should still send to the old FlutterViewController if FlutterViewController
+  // Touch events should still send to the old FlutterViewControllerSDK if FlutterViewControllerSDK
   // is updated in between.
   NSSet* touches2 = [NSSet setWithObject:@1];
   id event2 = OCMClassMock([UIEvent class]);
@@ -842,7 +842,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
   OCMVerify([mockFlutterViewContoller touchesEnded:touches5 withEvent:event5]);
   OCMReject([mockFlutterViewContoller2 touchesEnded:touches5 withEvent:event5]);
 
-  // Now the 2nd touch sequence should go to the new FlutterViewController
+  // Now the 2nd touch sequence should go to the new FlutterViewControllerSDK
 
   NSSet* touches6 = [NSSet setWithObject:@1];
   id event6 = OCMClassMock([UIEvent class]);
@@ -912,7 +912,7 @@ fml::RefPtr<fml::TaskRunner> CreateNewThread(std::string name) {
       break;
     }
   }
-  id mockFlutterViewContoller = OCMClassMock([FlutterViewController class]);
+  id mockFlutterViewContoller = OCMClassMock([FlutterViewControllerSDK class]);
 
   flutterPlatformViewsController->SetFlutterViewController(mockFlutterViewContoller);
 

@@ -5,7 +5,7 @@
 #import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngineGroup.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngineGroupSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterEngine_Test.h"
 
 FLUTTER_ASSERT_ARC
@@ -16,16 +16,16 @@ FLUTTER_ASSERT_ARC
 @implementation FlutterEngineGroupTest
 
 - (void)testMake {
-  FlutterEngineGroup* group = [[FlutterEngineGroup alloc] initWithName:@"foo" project:nil];
-  FlutterEngine* engine = [group makeEngineWithEntrypoint:nil libraryURI:nil];
+  FlutterEngineGroupSDK* group = [[FlutterEngineGroupSDK alloc] initWithName:@"foo" project:nil];
+  FlutterEngineSDK* engine = [group makeEngineWithEntrypoint:nil libraryURI:nil];
   XCTAssertNotNil(engine);
 }
 
 - (void)testSpawn {
-  FlutterEngineGroup* group = [[FlutterEngineGroup alloc] initWithName:@"foo" project:nil];
-  FlutterEngine* spawner = [group makeEngineWithEntrypoint:nil libraryURI:nil];
+  FlutterEngineGroupSDK* group = [[FlutterEngineGroupSDK alloc] initWithName:@"foo" project:nil];
+  FlutterEngineSDK* spawner = [group makeEngineWithEntrypoint:nil libraryURI:nil];
   spawner.isGpuDisabled = YES;
-  FlutterEngine* spawnee = [group makeEngineWithEntrypoint:nil libraryURI:nil];
+  FlutterEngineSDK* spawnee = [group makeEngineWithEntrypoint:nil libraryURI:nil];
   XCTAssertNotNil(spawner);
   XCTAssertNotNil(spawnee);
   XCTAssertEqual(&spawner.threadHost, &spawnee.threadHost);
@@ -33,20 +33,20 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testDeleteLastEngine {
-  FlutterEngineGroup* group = [[FlutterEngineGroup alloc] initWithName:@"foo" project:nil];
+  FlutterEngineGroupSDK* group = [[FlutterEngineGroupSDK alloc] initWithName:@"foo" project:nil];
   @autoreleasepool {
-    FlutterEngine* spawner = [group makeEngineWithEntrypoint:nil libraryURI:nil];
+    FlutterEngineSDK* spawner = [group makeEngineWithEntrypoint:nil libraryURI:nil];
     XCTAssertNotNil(spawner);
   }
-  FlutterEngine* spawnee = [group makeEngineWithEntrypoint:nil libraryURI:nil];
+  FlutterEngineSDK* spawnee = [group makeEngineWithEntrypoint:nil libraryURI:nil];
   XCTAssertNotNil(spawnee);
 }
 
 - (void)testReleasesProjectOnDealloc {
-  __weak FlutterDartProject* weakProject;
+  __weak FlutterDartProjectSDK* weakProject;
   @autoreleasepool {
-    FlutterDartProject* mockProject = OCMClassMock([FlutterDartProject class]);
-    FlutterEngineGroup* group = [[FlutterEngineGroup alloc] initWithName:@"foo"
+    FlutterDartProjectSDK* mockProject = OCMClassMock([FlutterDartProjectSDK class]);
+    FlutterEngineGroupSDK* group = [[FlutterEngineGroupSDK alloc] initWithName:@"foo"
                                                                  project:mockProject];
     weakProject = mockProject;
     XCTAssertNotNil(weakProject);

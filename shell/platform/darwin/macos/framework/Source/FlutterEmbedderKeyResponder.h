@@ -26,7 +26,7 @@ typedef void (^FlutterSendEmbedderKeyEvent)(const FlutterKeyEvent& /* event */,
 /**
  * Create an instance by specifying the function to send converted events to.
  *
- * The |sendEvent| is typically |FlutterEngine|'s |sendKeyEvent|.
+ * The |sendEvent| is typically |FlutterEngineSDK|'s |sendKeyEvent|.
  */
 - (nonnull instancetype)initWithSendEvent:(_Nonnull FlutterSendEmbedderKeyEvent)sendEvent;
 

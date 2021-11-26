@@ -9,32 +9,32 @@
 
 #pragma mark - Static methods for openGL callbacks that require the engine.
 
-static bool OnMakeCurrent(FlutterEngine* engine) {
+static bool OnMakeCurrent(FlutterEngineSDK* engine) {
   FlutterOpenGLRenderer* openGLRenderer = reinterpret_cast<FlutterOpenGLRenderer*>(engine.renderer);
   return [openGLRenderer makeCurrent];
 }
 
-static bool OnClearCurrent(FlutterEngine* engine) {
+static bool OnClearCurrent(FlutterEngineSDK* engine) {
   FlutterOpenGLRenderer* openGLRenderer = reinterpret_cast<FlutterOpenGLRenderer*>(engine.renderer);
   return [openGLRenderer clearCurrent];
 }
 
-static bool OnPresent(FlutterEngine* engine) {
+static bool OnPresent(FlutterEngineSDK* engine) {
   FlutterOpenGLRenderer* openGLRenderer = reinterpret_cast<FlutterOpenGLRenderer*>(engine.renderer);
   return [openGLRenderer glPresent];
 }
 
-static uint32_t OnFBO(FlutterEngine* engine, const FlutterFrameInfo* info) {
+static uint32_t OnFBO(FlutterEngineSDK* engine, const FlutterFrameInfo* info) {
   FlutterOpenGLRenderer* openGLRenderer = reinterpret_cast<FlutterOpenGLRenderer*>(engine.renderer);
   return [openGLRenderer fboForFrameInfo:info];
 }
 
-static bool OnMakeResourceCurrent(FlutterEngine* engine) {
+static bool OnMakeResourceCurrent(FlutterEngineSDK* engine) {
   FlutterOpenGLRenderer* openGLRenderer = reinterpret_cast<FlutterOpenGLRenderer*>(engine.renderer);
   return [openGLRenderer makeResourceCurrent];
 }
 
-static bool OnAcquireExternalTexture(FlutterEngine* engine,
+static bool OnAcquireExternalTexture(FlutterEngineSDK* engine,
                                      int64_t textureIdentifier,
                                      size_t width,
                                      size_t height,
@@ -57,10 +57,10 @@ static bool OnAcquireExternalTexture(FlutterEngine* engine,
   // The context provided to the Flutter engine for resource loading.
   NSOpenGLContext* _resourceContext;
 
-  __weak FlutterEngine* _flutterEngine;
+  __weak FlutterEngineSDK* _flutterEngine;
 }
 
-- (instancetype)initWithFlutterEngine:(FlutterEngine*)flutterEngine {
+- (instancetype)initWithFlutterEngine:(FlutterEngineSDK*)flutterEngine {
   self = [super initWithDelegate:self engine:flutterEngine];
   if (self) {
     _flutterEngine = flutterEngine;

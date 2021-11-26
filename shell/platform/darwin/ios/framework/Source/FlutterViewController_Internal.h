@@ -7,7 +7,7 @@
 
 #include "flutter/fml/memory/weak_ptr.h"
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterKeySecondaryResponder.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterKeyboardManager.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterRestorationPlugin.h"
@@ -27,12 +27,12 @@ extern NSNotificationName const FlutterViewControllerHideHomeIndicator;
 FLUTTER_DARWIN_EXPORT
 extern NSNotificationName const FlutterViewControllerShowHomeIndicator;
 
-@interface FlutterViewController () <FlutterViewResponder>
+@interface FlutterViewControllerSDK () <FlutterViewResponder>
 
 @property(nonatomic, readonly) BOOL isPresentingViewController;
 @property(nonatomic, readonly) BOOL isVoiceOverRunning;
 @property(nonatomic, retain) FlutterKeyboardManager* keyboardManager;
-- (fml::WeakPtr<FlutterViewController>)getWeakPtr;
+- (fml::WeakPtr<FlutterViewControllerSDK>)getWeakPtr;
 - (std::shared_ptr<flutter::FlutterPlatformViewsController>&)platformViewsController;
 - (FlutterRestorationPlugin*)restorationPlugin;
 // Send touches to the Flutter Engine while forcing the change type to be cancelled.

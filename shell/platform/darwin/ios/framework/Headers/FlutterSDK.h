@@ -5,20 +5,20 @@
 #ifndef FLUTTER_FLUTTER_H_
 #define FLUTTER_FLUTTER_H_
 
-#import "FlutterAppDelegate.h"
+#import "FlutterAppDelegateSDK.h"
 #import "FlutterBinaryMessenger.h"
 #import "FlutterCallbackCache.h"
 #import "FlutterChannels.h"
 #import "FlutterCodecs.h"
-#import "FlutterDartProject.h"
-#import "FlutterEngine.h"
-#import "FlutterEngineGroup.h"
-#import "FlutterHeadlessDartRunner.h"
+#import "FlutterDartProjectSDK.h"
+#import "FlutterEngineSDK.h"
+#import "FlutterEngineGroupSDK.h"
+#import "FlutterHeadlessDartRunnerSDK.h"
 #import "FlutterMacros.h"
 #import "FlutterPlatformViews.h"
-#import "FlutterPlugin.h"
-#import "FlutterPluginAppLifeCycleDelegate.h"
+#import "FlutterPluginSDK.h"
+#import "FlutterPluginAppLifeCycleDelegateSDK.h"
 #import "FlutterTexture.h"
-#import "FlutterViewController.h"
+#import "FlutterViewControllerSDK.h"
 
 #endif  // FLUTTER_FLUTTER_H_

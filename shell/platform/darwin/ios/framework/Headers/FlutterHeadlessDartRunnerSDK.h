@@ -8,8 +8,8 @@
 #import <Foundation/Foundation.h>
 
 #import "FlutterBinaryMessenger.h"
-#import "FlutterDartProject.h"
-#import "FlutterEngine.h"
+#import "FlutterDartProjectSDK.h"
+#import "FlutterEngineSDK.h"
 #import "FlutterMacros.h"
 
 /**
@@ -26,69 +26,69 @@ typedef void (^FlutterHeadlessDartRunnerCallback)(BOOL success);
  * and no native drawing surface. It is appropriate for use in running Dart
  * code e.g. in the background from a plugin.
  *
- * Most callers should prefer using `FlutterEngine` directly; this interface exists
+ * Most callers should prefer using `FlutterEngineSDK` directly; this interface exists
  * for legacy support.
  */
 FLUTTER_DARWIN_EXPORT
-FLUTTER_DEPRECATED("FlutterEngine should be used rather than FlutterHeadlessDartRunner")
-@interface FlutterHeadlessDartRunner : FlutterEngine
+FLUTTER_DEPRECATED("FlutterEngineSDK should be used rather than FlutterHeadlessDartRunnerSDK")
+@interface FlutterHeadlessDartRunnerSDK : FlutterEngineSDK
 
 /**
- * Initialize this FlutterHeadlessDartRunner with a `FlutterDartProject`.
+ * Initialize this FlutterHeadlessDartRunnerSDK with a `FlutterDartProjectSDK`.
  *
- * If the FlutterDartProject is not specified, the FlutterHeadlessDartRunner will attempt to locate
+ * If the FlutterDartProjectSDK is not specified, the FlutterHeadlessDartRunnerSDK will attempt to locate
  * the project in a default location.
  *
- * A newly initialized engine will not run the `FlutterDartProject` until either
+ * A newly initialized engine will not run the `FlutterDartProjectSDK` until either
  * `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI` is called.
  *
  * @param labelPrefix The label prefix used to identify threads for this instance. Should
- * be unique across FlutterEngine instances
- * @param projectOrNil The `FlutterDartProject` to run.
+ * be unique across FlutterEngineSDK instances
+ * @param projectOrNil The `FlutterDartProjectSDK` to run.
  */
-- (instancetype)initWithName:(NSString*)labelPrefix project:(FlutterDartProject*)projectOrNil;
+- (instancetype)initWithName:(NSString*)labelPrefix project:(FlutterDartProjectSDK*)projectOrNil;
 
 /**
- * Initialize this FlutterHeadlessDartRunner with a `FlutterDartProject`.
+ * Initialize this FlutterHeadlessDartRunnerSDK with a `FlutterDartProjectSDK`.
  *
- * If the FlutterDartProject is not specified, the FlutterHeadlessDartRunner will attempt to locate
+ * If the FlutterDartProjectSDK is not specified, the FlutterHeadlessDartRunnerSDK will attempt to locate
  * the project in a default location.
  *
- * A newly initialized engine will not run the `FlutterDartProject` until either
+ * A newly initialized engine will not run the `FlutterDartProjectSDK` until either
  * `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI` is called.
  *
  * @param labelPrefix The label prefix used to identify threads for this instance. Should
- * be unique across FlutterEngine instances
- * @param projectOrNil The `FlutterDartProject` to run.
+ * be unique across FlutterEngineSDK instances
+ * @param projectOrNil The `FlutterDartProjectSDK` to run.
  * @param allowHeadlessExecution Must be set to `YES`.
  */
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(FlutterDartProject*)projectOrNil
+                     project:(FlutterDartProjectSDK*)projectOrNil
       allowHeadlessExecution:(BOOL)allowHeadlessExecution;
 
 /**
- * Initialize this FlutterHeadlessDartRunner with a `FlutterDartProject`.
+ * Initialize this FlutterHeadlessDartRunnerSDK with a `FlutterDartProjectSDK`.
  *
- * If the FlutterDartProject is not specified, the FlutterHeadlessDartRunner will attempt to locate
+ * If the FlutterDartProjectSDK is not specified, the FlutterHeadlessDartRunnerSDK will attempt to locate
  * the project in a default location.
  *
- * A newly initialized engine will not run the `FlutterDartProject` until either
+ * A newly initialized engine will not run the `FlutterDartProjectSDK` until either
  * `-runWithEntrypoint:` or `-runWithEntrypoint:libraryURI` is called.
  *
  * @param labelPrefix The label prefix used to identify threads for this instance. Should
- * be unique across FlutterEngine instances
- * @param projectOrNil The `FlutterDartProject` to run.
+ * be unique across FlutterEngineSDK instances
+ * @param projectOrNil The `FlutterDartProjectSDK` to run.
  * @param allowHeadlessExecution Must be set to `YES`.
  * @param restorationEnabled Must be set to `NO`.
  */
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(FlutterDartProject*)projectOrNil
+                     project:(FlutterDartProjectSDK*)projectOrNil
       allowHeadlessExecution:(BOOL)allowHeadlessExecution
           restorationEnabled:(BOOL)restorationEnabled NS_DESIGNATED_INITIALIZER;
 
 /**
  * Not recommended for use - will initialize with a default label ("io.flutter.headless")
- * and the default FlutterDartProject.
+ * and the default FlutterDartProjectSDK.
  */
 - (instancetype)init;
 

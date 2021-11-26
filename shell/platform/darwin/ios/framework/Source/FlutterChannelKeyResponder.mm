@@ -9,7 +9,7 @@
 #include "fml/memory/weak_ptr.h"
 
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterCodecs.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngine.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngineSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterUIPressProxy.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterViewController_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/KeyCodeMap_Internal.h"

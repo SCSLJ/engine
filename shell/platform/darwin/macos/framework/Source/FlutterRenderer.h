@@ -15,9 +15,9 @@
 @protocol FlutterRenderer <FlutterTextureRegistry, FlutterTextureRegistrarDelegate>
 
 /**
- * Intializes the renderer with the given FlutterEngine.
+ * Intializes the renderer with the given FlutterEngineSDK.
  */
-- (nullable instancetype)initWithFlutterEngine:(nonnull FlutterEngine*)flutterEngine;
+- (nullable instancetype)initWithFlutterEngine:(nonnull FlutterEngineSDK*)flutterEngine;
 
 /**
  * Sets the FlutterView to render to.

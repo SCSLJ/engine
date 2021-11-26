@@ -439,7 +439,7 @@ inline SkMatrix SkMatrixMake(const FlutterTransformation& xformation) {
   );
 }
 
-inline flutter::EmbedderEngine* ToEmbedderEngine(const FlutterEngine& engine) {
+inline flutter::EmbedderEngine* ToEmbedderEngine(const FlutterEngineSDK& engine) {
   return reinterpret_cast<flutter::EmbedderEngine*>(engine);
 }
 

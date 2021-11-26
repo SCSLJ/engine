@@ -76,11 +76,11 @@ void PlatformViewIOS::HandlePlatformMessage(std::unique_ptr<flutter::PlatformMes
   platform_message_router_.HandlePlatformMessage(std::move(message));
 }
 
-fml::WeakPtr<FlutterViewController> PlatformViewIOS::GetOwnerViewController() const {
+fml::WeakPtr<FlutterViewControllerSDK> PlatformViewIOS::GetOwnerViewController() const {
   return owner_controller_;
 }
 
-void PlatformViewIOS::SetOwnerViewController(fml::WeakPtr<FlutterViewController> owner_controller) {
+void PlatformViewIOS::SetOwnerViewController(fml::WeakPtr<FlutterViewControllerSDK> owner_controller) {
   FML_DCHECK(task_runners_.GetPlatformTaskRunner()->RunsTasksOnCurrentThread());
   std::lock_guard<std::mutex> guard(ios_surface_mutex_);
   if (ios_surface_ || !owner_controller) {
@@ -105,7 +105,7 @@ void PlatformViewIOS::SetOwnerViewController(fml::WeakPtr<FlutterViewController>
   if (owner_controller_ && [owner_controller_.get() isViewLoaded]) {
     this->attachView();
   }
-  // Do not call `NotifyCreated()` here - let FlutterViewController take care
+  // Do not call `NotifyCreated()` here - let FlutterViewControllerSDK take care
   // of that when its Viewport is sized.  If `NotifyCreated()` is called here,
   // it can occasionally get invoked before the viewport is sized resulting in
   // a framebuffer that will not be able to completely attach.
@@ -114,7 +114,7 @@ void PlatformViewIOS::SetOwnerViewController(fml::WeakPtr<FlutterViewController>
 void PlatformViewIOS::attachView() {
   FML_DCHECK(owner_controller_);
   FML_DCHECK(owner_controller_.get().isViewLoaded)
-      << "FlutterViewController's view should be loaded "
+      << "FlutterViewControllerSDK's view should be loaded "
          "before attaching to PlatformViewIOS.";
   auto flutter_view = static_cast<FlutterView*>(owner_controller_.get().view);
   auto ca_layer = fml::scoped_nsobject<CALayer>{[[flutter_view layer] retain]};

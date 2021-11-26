@@ -6,7 +6,7 @@
 #import <XCTest/XCTest.h>
 
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterMacros.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPluginAppLifeCycleDelegate.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPluginAppLifeCycleDelegateSDK.h"
 
 FLUTTER_ASSERT_ARC
 
@@ -16,15 +16,15 @@ FLUTTER_ASSERT_ARC
 @implementation FlutterPluginAppLifeCycleDelegateTest
 
 - (void)testCreate {
-  FlutterPluginAppLifeCycleDelegate* delegate = [[FlutterPluginAppLifeCycleDelegate alloc] init];
+  FlutterPluginAppLifeCycleDelegateSDK* delegate = [[FlutterPluginAppLifeCycleDelegateSDK alloc] init];
   XCTAssertNotNil(delegate);
 }
 
 - (void)testDidEnterBackground {
   XCTNSNotificationExpectation* expectation = [[XCTNSNotificationExpectation alloc]
       initWithName:UIApplicationDidEnterBackgroundNotification];
-  FlutterPluginAppLifeCycleDelegate* delegate = [[FlutterPluginAppLifeCycleDelegate alloc] init];
-  id plugin = OCMProtocolMock(@protocol(FlutterPlugin));
+  FlutterPluginAppLifeCycleDelegateSDK* delegate = [[FlutterPluginAppLifeCycleDelegateSDK alloc] init];
+  id plugin = OCMProtocolMock(@protocol(FlutterPluginSDK));
   [delegate addDelegate:plugin];
   [[NSNotificationCenter defaultCenter]
       postNotificationName:UIApplicationDidEnterBackgroundNotification
@@ -38,8 +38,8 @@ FLUTTER_ASSERT_ARC
   XCTNSNotificationExpectation* expectation = [[XCTNSNotificationExpectation alloc]
       initWithName:UIApplicationWillEnterForegroundNotification];
 
-  FlutterPluginAppLifeCycleDelegate* delegate = [[FlutterPluginAppLifeCycleDelegate alloc] init];
-  id plugin = OCMProtocolMock(@protocol(FlutterPlugin));
+  FlutterPluginAppLifeCycleDelegateSDK* delegate = [[FlutterPluginAppLifeCycleDelegateSDK alloc] init];
+  id plugin = OCMProtocolMock(@protocol(FlutterPluginSDK));
   [delegate addDelegate:plugin];
   [[NSNotificationCenter defaultCenter]
       postNotificationName:UIApplicationWillEnterForegroundNotification
@@ -52,8 +52,8 @@ FLUTTER_ASSERT_ARC
   XCTNSNotificationExpectation* expectation =
       [[XCTNSNotificationExpectation alloc] initWithName:UIApplicationWillResignActiveNotification];
 
-  FlutterPluginAppLifeCycleDelegate* delegate = [[FlutterPluginAppLifeCycleDelegate alloc] init];
-  id plugin = OCMProtocolMock(@protocol(FlutterPlugin));
+  FlutterPluginAppLifeCycleDelegateSDK* delegate = [[FlutterPluginAppLifeCycleDelegateSDK alloc] init];
+  id plugin = OCMProtocolMock(@protocol(FlutterPluginSDK));
   [delegate addDelegate:plugin];
   [[NSNotificationCenter defaultCenter]
       postNotificationName:UIApplicationWillResignActiveNotification
@@ -66,8 +66,8 @@ FLUTTER_ASSERT_ARC
   XCTNSNotificationExpectation* expectation =
       [[XCTNSNotificationExpectation alloc] initWithName:UIApplicationDidBecomeActiveNotification];
 
-  FlutterPluginAppLifeCycleDelegate* delegate = [[FlutterPluginAppLifeCycleDelegate alloc] init];
-  id plugin = OCMProtocolMock(@protocol(FlutterPlugin));
+  FlutterPluginAppLifeCycleDelegateSDK* delegate = [[FlutterPluginAppLifeCycleDelegateSDK alloc] init];
+  id plugin = OCMProtocolMock(@protocol(FlutterPluginSDK));
   [delegate addDelegate:plugin];
   [[NSNotificationCenter defaultCenter]
       postNotificationName:UIApplicationDidBecomeActiveNotification
@@ -80,8 +80,8 @@ FLUTTER_ASSERT_ARC
   XCTNSNotificationExpectation* expectation =
       [[XCTNSNotificationExpectation alloc] initWithName:UIApplicationWillTerminateNotification];
 
-  FlutterPluginAppLifeCycleDelegate* delegate = [[FlutterPluginAppLifeCycleDelegate alloc] init];
-  id plugin = OCMProtocolMock(@protocol(FlutterPlugin));
+  FlutterPluginAppLifeCycleDelegateSDK* delegate = [[FlutterPluginAppLifeCycleDelegateSDK alloc] init];
+  id plugin = OCMProtocolMock(@protocol(FlutterPluginSDK));
   [delegate addDelegate:plugin];
   [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationWillTerminateNotification
                                                       object:nil];

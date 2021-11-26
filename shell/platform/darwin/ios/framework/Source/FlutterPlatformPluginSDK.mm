@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPlugin.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPluginSDK.h"
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <Foundation/Foundation.h>
@@ -35,17 +35,17 @@ const char* const kOverlayStyleUpdateNotificationKey =
 
 using namespace flutter;
 
-@implementation FlutterPlatformPlugin {
-  fml::WeakPtr<FlutterEngine> _engine;
+@implementation FlutterPlatformPluginSDK {
+  fml::WeakPtr<FlutterEngineSDK> _engine;
 }
 
 - (instancetype)init {
-  @throw([NSException exceptionWithName:@"FlutterPlatformPlugin must initWithEngine"
+  @throw([NSException exceptionWithName:@"FlutterPlatformPluginSDK must initWithEngine"
                                  reason:nil
                                userInfo:nil]);
 }
 
-- (instancetype)initWithEngine:(fml::WeakPtr<FlutterEngine>)engine {
+- (instancetype)initWithEngine:(fml::WeakPtr<FlutterEngineSDK>)engine {
   FML_DCHECK(engine) << "engine must be set";
   self = [super init];
 

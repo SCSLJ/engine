@@ -8,12 +8,12 @@
 #import <XCTest/XCTest.h>
 
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterMacros.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngine.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngineSDK.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 
 FLUTTER_ASSERT_ARC
 
-@interface FlutterEngine ()
+@interface FlutterEngineSDK ()
 - (nonnull FlutterTextInputPlugin*)textInputPlugin;
 @end
 
@@ -75,16 +75,16 @@ FLUTTER_ASSERT_ARC
   NSDictionary* _passwordTemplate;
   id engine;
   FlutterTextInputPlugin* textInputPlugin;
-  FlutterViewController* viewController;
+  FlutterViewControllerSDK* viewController;
 }
 
 - (void)setUp {
   [super setUp];
 
-  engine = OCMClassMock([FlutterEngine class]);
+  engine = OCMClassMock([FlutterEngineSDK class]);
   textInputPlugin = [[FlutterTextInputPlugin alloc] init];
   textInputPlugin.textInputDelegate = engine;
-  viewController = [FlutterViewController new];
+  viewController = [FlutterViewControllerSDK new];
   textInputPlugin.viewController = viewController;
 
   // Clear pasteboard between tests.
@@ -371,7 +371,7 @@ FLUTTER_ASSERT_ARC
   @autoreleasepool {
     FlutterTextInputPlugin* inputPlugin = [[FlutterTextInputPlugin alloc] init];
     activeView = inputPlugin.activeView;
-    FlutterEngine* flutterEngine = [[FlutterEngine alloc] init];
+    FlutterEngineSDK* FlutterEngineSDK = [[FlutterEngineSDK alloc] init];
     activeView.textInputDelegate = (id<FlutterTextInputDelegate>)flutterEngine;
   }
   XCTAssert(!activeView.textInputDelegate);
@@ -1686,10 +1686,10 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testFlutterTextInputPluginRetainsFlutterTextInputView {
-  FlutterViewController* flutterViewController = [FlutterViewController new];
+  FlutterViewControllerSDK* FlutterViewControllerSDK = [FlutterViewControllerSDK new];
   FlutterTextInputPlugin* myInputPlugin = [[FlutterTextInputPlugin alloc] init];
   myInputPlugin.textInputDelegate = engine;
-  myInputPlugin.viewController = flutterViewController;
+  myInputPlugin.viewController = FlutterViewControllerSDK;
 
   __weak UIView* activeView;
   @autoreleasepool {
@@ -1720,10 +1720,10 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testFlutterTextInputPluginHostViewNotNil {
-  FlutterViewController* flutterViewController = [FlutterViewController new];
-  FlutterEngine* flutterEngine = [[FlutterEngine alloc] init];
+  FlutterViewControllerSDK* FlutterViewControllerSDK = [FlutterViewControllerSDK new];
+  FlutterEngineSDK* FlutterEngineSDK = [[FlutterEngineSDK alloc] init];
   [flutterEngine runWithEntrypoint:nil];
-  flutterEngine.viewController = flutterViewController;
+  flutterEngine.viewController = FlutterViewControllerSDK;
   XCTAssertNotNil(flutterEngine.textInputPlugin.viewController);
   XCTAssertNotNil([flutterEngine.textInputPlugin hostView]);
 }

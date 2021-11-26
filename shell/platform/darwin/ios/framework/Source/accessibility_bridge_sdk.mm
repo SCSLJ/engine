@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#import "flutter/shell/platform/darwin/ios/framework/Source/accessibility_bridge.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/accessibility_bridge_sdk.h"
 
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterEngine_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterViewController_Internal.h"
@@ -21,7 +21,7 @@ constexpr int32_t kSemanticObjectIdInvalid = -1;
 class DefaultIosDelegate : public AccessibilityBridge::IosDelegate {
  public:
   bool IsFlutterViewControllerPresentingModalViewController(
-      FlutterViewController* view_controller) override {
+      FlutterViewControllerSDK* view_controller) override {
     if (view_controller) {
       return view_controller.isPresentingViewController;
     } else {
@@ -37,7 +37,7 @@ class DefaultIosDelegate : public AccessibilityBridge::IosDelegate {
 }  // namespace
 
 AccessibilityBridge::AccessibilityBridge(
-    FlutterViewController* view_controller,
+    FlutterViewControllerSDK* view_controller,
     PlatformViewIOS* platform_view,
     std::shared_ptr<FlutterPlatformViewsController> platform_views_controller,
     std::unique_ptr<IosDelegate> ios_delegate)

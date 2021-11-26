@@ -26,15 +26,15 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testCreate {
-  id project = OCMClassMock([FlutterDartProject class]);
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  id project = OCMClassMock([FlutterDartProjectSDK class]);
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   XCTAssertNotNil(engine);
 }
 
 - (void)testInfoPlist {
   // Check the embedded Flutter.framework Info.plist, not the linked dylib.
   NSURL* flutterFrameworkURL =
-      [NSBundle.mainBundle.privateFrameworksURL URLByAppendingPathComponent:@"Flutter.framework"];
+      [NSBundle.mainBundle.privateFrameworksURL URLByAppendingPathComponent:@"FlutterSDK.framework"];
   NSBundle* flutterBundle = [NSBundle bundleWithURL:flutterFrameworkURL];
   XCTAssertEqualObjects(flutterBundle.bundleIdentifier, @"io.flutter.flutter");
 
@@ -79,7 +79,7 @@ FLUTTER_ASSERT_ARC
   XCTAssertEqual(versionMatches, 1UL);
 
   // SHA length is 40.
-  XCTAssertEqual(((NSString*)infoDictionary[@"FlutterEngine"]).length, 40UL);
+  XCTAssertEqual(((NSString*)infoDictionary[@"FlutterEngineSDK"]).length, 40UL);
 
   // {clang_version} placeholder is 15 characters. The clang string version
   // is longer than that, so check if the placeholder has been replaced, without
@@ -88,9 +88,9 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testDeallocated {
-  __weak FlutterEngine* weakEngine = nil;
+  __weak FlutterEngineSDK* weakEngine = nil;
   {
-    FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar"];
+    FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar"];
     weakEngine = engine;
     [engine run];
     XCTAssertNotNil(weakEngine);
@@ -99,8 +99,8 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testSendMessageBeforeRun {
-  id project = OCMClassMock([FlutterDartProject class]);
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  id project = OCMClassMock([FlutterDartProjectSDK class]);
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   XCTAssertNotNil(engine);
   XCTAssertThrows([engine.binaryMessenger
       sendOnChannel:@"foo"
@@ -109,8 +109,8 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testSetMessageHandlerBeforeRun {
-  id project = OCMClassMock([FlutterDartProject class]);
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  id project = OCMClassMock([FlutterDartProjectSDK class]);
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   XCTAssertNotNil(engine);
   XCTAssertThrows([engine.binaryMessenger
       setMessageHandlerOnChannel:@"foo"
@@ -120,8 +120,8 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testNilSetMessageHandlerBeforeRun {
-  id project = OCMClassMock([FlutterDartProject class]);
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  id project = OCMClassMock([FlutterDartProjectSDK class]);
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   XCTAssertNotNil(engine);
   XCTAssertNoThrow([engine.binaryMessenger setMessageHandlerOnChannel:@"foo"
                                                  binaryMessageHandler:nil]);
@@ -131,8 +131,8 @@ FLUTTER_ASSERT_ARC
   id plugin = OCMProtocolMock(@protocol(FlutterPlugin));
   OCMStub([plugin detachFromEngineForRegistrar:[OCMArg any]]);
   {
-    id project = OCMClassMock([FlutterDartProject class]);
-    FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"engine" project:project];
+    id project = OCMClassMock([FlutterDartProjectSDK class]);
+    FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"engine" project:project];
     NSObject<FlutterPluginRegistrar>* registrar = [engine registrarForPlugin:@"plugin"];
     [registrar publish:plugin];
     engine = nil;
@@ -143,7 +143,7 @@ FLUTTER_ASSERT_ARC
 - (void)testRunningInitialRouteSendsNavigationMessage {
   id mockBinaryMessenger = OCMClassMock([FlutterBinaryMessengerRelay class]);
 
-  FlutterEngine* engine = [[FlutterEngine alloc] init];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] init];
   [engine setBinaryMessenger:mockBinaryMessenger];
 
   // Run with an initial route.
@@ -160,7 +160,7 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testPlatformViewsControllerRenderingMetalBackend {
-  FlutterEngine* engine = [[FlutterEngine alloc] init];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] init];
   [engine run];
   flutter::IOSRenderingAPI renderingApi = [engine platformViewsRenderingAPI];
 
@@ -170,8 +170,8 @@ FLUTTER_ASSERT_ARC
 - (void)testPlatformViewsControllerRenderingSoftware {
   auto settings = FLTDefaultSettingsForBundle();
   settings.enable_software_rendering = true;
-  FlutterDartProject* project = [[FlutterDartProject alloc] initWithSettings:settings];
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  FlutterDartProjectSDK* project = [[FlutterDartProjectSDK alloc] initWithSettings:settings];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   [engine run];
   flutter::IOSRenderingAPI renderingApi = [engine platformViewsRenderingAPI];
 
@@ -179,7 +179,7 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testWaitForFirstFrameTimeout {
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar"];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar"];
   [engine run];
   XCTestExpectation* timeoutFirstFrame = [self expectationWithDescription:@"timeoutFirstFrame"];
   [engine waitForFirstFrame:0.1
@@ -192,9 +192,9 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testSpawn {
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar"];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar"];
   [engine run];
-  FlutterEngine* spawn = [engine spawnWithEntrypoint:nil libraryURI:nil initialRoute:nil];
+  FlutterEngineSDK* spawn = [engine spawnWithEntrypoint:nil libraryURI:nil initialRoute:nil];
   XCTAssertNotNil(spawn);
 }
 
@@ -203,7 +203,7 @@ FLUTTER_ASSERT_ARC
   NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
   id<NSObject> observer;
   @autoreleasepool {
-    FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar"];
+    FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar"];
     observer = [center addObserverForName:FlutterEngineWillDealloc
                                    object:engine
                                     queue:[NSOperationQueue mainQueue]

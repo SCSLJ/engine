@@ -5,16 +5,16 @@
 #import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterAppDelegate.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngine.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterAppDelegateSDK.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngineSDK.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterAppDelegate_Test.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterEngine_Test.h"
 
 FLUTTER_ASSERT_ARC
 
 @interface FlutterAppDelegateTest : XCTestCase
-@property(strong) FlutterAppDelegate* appDelegate;
+@property(strong) FlutterAppDelegateSDK* appDelegate;
 
 @property(strong) id mockMainBundle;
 @property(strong) id mockNavigationChannel;
@@ -33,14 +33,14 @@ FLUTTER_ASSERT_ARC
   OCMStub([mockMainBundle mainBundle]).andReturn(mockMainBundle);
   self.mockMainBundle = mockMainBundle;
 
-  FlutterAppDelegate* appDelegate = [[FlutterAppDelegate alloc] init];
+  FlutterAppDelegateSDK* appDelegate = [[FlutterAppDelegateSDK alloc] init];
   self.appDelegate = appDelegate;
 
-  FlutterViewController* viewController = OCMClassMock([FlutterViewController class]);
+  FlutterViewControllerSDK* viewController = OCMClassMock([FlutterViewControllerSDK class]);
   FlutterMethodChannel* navigationChannel = OCMClassMock([FlutterMethodChannel class]);
   self.mockNavigationChannel = navigationChannel;
 
-  FlutterEngine* engine = OCMClassMock([FlutterEngine class]);
+  FlutterEngineSDK* engine = OCMClassMock([FlutterEngineSDK class]);
   OCMStub([engine navigationChannel]).andReturn(navigationChannel);
   OCMStub([viewController engine]).andReturn(engine);
 
@@ -125,7 +125,7 @@ FLUTTER_ASSERT_ARC
   __weak UIWindow* weakWindow;
   @autoreleasepool {
     id mockWindow = OCMClassMock([UIWindow class]);
-    FlutterAppDelegate* appDelegate = [[FlutterAppDelegate alloc] init];
+    FlutterAppDelegateSDK* appDelegate = [[FlutterAppDelegateSDK alloc] init];
     appDelegate.window = mockWindow;
     weakWindow = mockWindow;
     XCTAssertNotNil(weakWindow);

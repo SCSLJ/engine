@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef FLUTTER_FLUTTERAPPDELEGATE_H_
-#define FLUTTER_FLUTTERAPPDELEGATE_H_
+#ifndef FLUTTER_FLUTTERAPPDELEGATESDK_H_
+#define FLUTTER_FLUTTERAPPDELEGATESDK_H_
 
 #import <UIKit/UIKit.h>
 
 #import "FlutterMacros.h"
-#import "FlutterPlugin.h"
+#import "FlutterPluginSDK.h"
 
 /**
  * `UIApplicationDelegate` subclass for simple apps that want default behavior.
@@ -21,11 +21,11 @@
  *
  * App delegates for Flutter applications are *not* required to inherit from
  * this class. Developers of custom app delegate classes should copy and paste
- * code as necessary from FlutterAppDelegate.mm.
+ * code as necessary from FlutterAppDelegateSDK.mm.
  */
 FLUTTER_DARWIN_EXPORT
-@interface FlutterAppDelegate
-    : UIResponder <UIApplicationDelegate, FlutterPluginRegistry, FlutterAppLifeCycleProvider>
+@interface FlutterAppDelegateSDK
+    : UIResponder <UIApplicationDelegate, FlutterPluginRegistrySDK, FlutterAppLifeCycleProviderSDK>
 
 @property(strong, nonatomic) UIWindow* window;
 

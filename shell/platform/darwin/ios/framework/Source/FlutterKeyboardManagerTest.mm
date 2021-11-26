@@ -22,30 +22,30 @@ class PointerDataPacket {};
 }
 
 /// Sometimes we have to use a custom mock to avoid retain cycles in ocmock.
-@interface FlutterEnginePartialMock : FlutterEngine
+@interface FlutterEngineSDKPartialMock : FlutterEngineSDK
 @property(nonatomic, strong) FlutterBasicMessageChannel* lifecycleChannel;
-@property(nonatomic, weak) FlutterViewController* viewController;
+@property(nonatomic, weak) FlutterViewControllerSDK* viewController;
 @property(nonatomic, assign) BOOL didCallNotifyLowMemory;
 @end
 
-@interface FlutterEngine ()
+@interface FlutterEngineSDK ()
 - (BOOL)createShell:(NSString*)entrypoint
          libraryURI:(NSString*)libraryURI
        initialRoute:(NSString*)initialRoute;
 - (void)dispatchPointerDataPacket:(std::unique_ptr<flutter::PointerDataPacket>)packet;
 @end
 
-@interface FlutterEngine (TestLowMemory)
+@interface FlutterEngineSDK (TestLowMemory)
 - (void)notifyLowMemory;
 @end
 
 extern NSNotificationName const FlutterViewControllerWillDealloc;
 
-/// A simple mock class for FlutterEngine.
+/// A simple mock class for FlutterEngineSDK.
 ///
-/// OCMockClass can't be used for FlutterEngine sometimes because OCMock retains arguments to
-/// invocations and since the init for FlutterViewController calls a method on the
-/// FlutterEngine it creates a retain cycle that stops us from testing behaviors related to
+/// OCMockClass can't be used for FlutterEngineSDK sometimes because OCMock retains arguments to
+/// invocations and since the init for FlutterViewControllerSDK calls a method on the
+/// FlutterEngineSDK it creates a retain cycle that stops us from testing behaviors related to
 /// deleting FlutterViewControllers.
 @interface MockEngine : NSObject
 @end
@@ -68,19 +68,19 @@ typedef BOOL (^BoolGetter)();
 
 @interface FlutterKeyboardManagerTest : XCTestCase
 @property(nonatomic, strong) id mockEngine;
-- (FlutterViewController*)mockOwnerWithPressesBeginOnlyNext API_AVAILABLE(ios(13.4));
+- (FlutterViewControllerSDK*)mockOwnerWithPressesBeginOnlyNext API_AVAILABLE(ios(13.4));
 @end
 
 @implementation FlutterKeyboardManagerTest
 
 - (void)setUp {
   [super setUp];
-  self.mockEngine = OCMClassMock([FlutterEngine class]);
+  self.mockEngine = OCMClassMock([FlutterEngineSDK class]);
 }
 
 - (void)tearDown {
   // We stop mocking here to avoid retain cycles that stop
-  // FlutterViewControllers from deallocing.
+  // FlutterViewControllerSDKs from deallocing.
   [self.mockEngine stopMocking];
   self.mockEngine = nil;
   [super tearDown];
@@ -125,15 +125,15 @@ typedef BOOL (^BoolGetter)();
   return mock;
 }
 
-- (FlutterViewController*)mockOwnerWithPressesBeginOnlyNext API_AVAILABLE(ios(13.4)) {
+- (FlutterViewControllerSDK*)mockOwnerWithPressesBeginOnlyNext API_AVAILABLE(ios(13.4)) {
   // The nextResponder is a strict mock and hasn't stubbed pressesEnded.
   // An error will be thrown on pressesEnded.
   UIResponder* nextResponder = OCMStrictClassMock([UIResponder class]);
   OCMStub([nextResponder pressesBegan:[OCMArg any] withEvent:[OCMArg any]]).andDo(nil);
 
-  FlutterViewController* viewController =
-      [[FlutterViewController alloc] initWithEngine:self.mockEngine nibName:nil bundle:nil];
-  FlutterViewController* owner = OCMPartialMock(viewController);
+  FlutterViewControllerSDK* viewController =
+      [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine nibName:nil bundle:nil];
+  FlutterViewControllerSDK* owner = OCMPartialMock(viewController);
   OCMStub([owner nextResponder]).andReturn(nextResponder);
   return owner;
 }
@@ -141,7 +141,7 @@ typedef BOOL (^BoolGetter)();
 // Verify that the nextResponder returned from mockOwnerWithPressesBeginOnlyNext()
 // throws exception when pressesEnded is called.
 - (bool)testNextResponderShouldThrowOnPressesEnded API_AVAILABLE(ios(13.4)) {
-  FlutterViewController* owner = [self mockOwnerWithPressesBeginOnlyNext];
+  FlutterViewControllerSDK* owner = [self mockOwnerWithPressesBeginOnlyNext];
   @try {
     [owner.nextResponder pressesEnded:[NSSet init] withEvent:[[UIPressesEvent alloc] init]];
     return false;

@@ -20,17 +20,17 @@ namespace flutter::testing {
 
 namespace {
 // Returns an engine configured for the text fixture resource configuration.
-FlutterEngine* CreateTestEngine() {
+FlutterEngineSDK* CreateTestEngine() {
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
-  return [[FlutterEngine alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
+  return [[FlutterEngineSDK alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
 }
 }  // namespace
 
 TEST(FlutterPlatformNodeDelegateMac, Basics) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   engine.semanticsEnabled = YES;
   auto bridge = engine.accessibilityBridge.lock();
   // Initialize ax node data.
@@ -64,7 +64,7 @@ TEST(FlutterPlatformNodeDelegateMac, Basics) {
 }
 
 TEST(FlutterPlatformNodeDelegateMac, SelectableTextHasCorrectSemantics) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   engine.semanticsEnabled = YES;
   auto bridge = engine.accessibilityBridge.lock();
   // Initialize ax node data.
@@ -104,7 +104,7 @@ TEST(FlutterPlatformNodeDelegateMac, SelectableTextHasCorrectSemantics) {
 }
 
 TEST(FlutterPlatformNodeDelegateMac, SelectableTextWithoutSelectionReturnZeroRange) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   engine.semanticsEnabled = YES;
   auto bridge = engine.accessibilityBridge.lock();
   // Initialize ax node data.
@@ -138,7 +138,7 @@ TEST(FlutterPlatformNodeDelegateMac, SelectableTextWithoutSelectionReturnZeroRan
 }
 
 TEST(FlutterPlatformNodeDelegateMac, CanPerformAction) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
 
   // Set up view controller.
   NSString* fixtures = @(testing::GetFixturesPath());
@@ -212,7 +212,7 @@ TEST(FlutterPlatformNodeDelegateMac, CanPerformAction) {
 }
 
 TEST(FlutterPlatformNodeDelegateMac, TextFieldUsesFlutterTextField) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures

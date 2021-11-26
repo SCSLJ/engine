@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #include "fml/memory/weak_ptr.h"
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterKeyPrimaryResponder.h"
 #import "flutter/shell/platform/embedder/embedder.h"
 
@@ -32,7 +32,7 @@ typedef void (^FlutterSendKeyEvent)(const FlutterKeyEvent& /* event */,
 /**
  * Create an instance by specifying the function to send converted events to.
  *
- * The |sendEvent| is typically |FlutterEngine|'s |sendKeyEvent|.
+ * The |sendEvent| is typically |FlutterEngineSDK|'s |sendKeyEvent|.
  */
 - (nonnull instancetype)initWithSendEvent:(nonnull FlutterSendKeyEvent)sendEvent;
 

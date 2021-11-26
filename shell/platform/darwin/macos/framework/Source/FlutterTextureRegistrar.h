@@ -38,7 +38,7 @@
  * Initialzes the texture registrar.
  */
 - (nullable instancetype)initWithDelegate:(nonnull id<FlutterTextureRegistrarDelegate>)delegate
-                                   engine:(nonnull FlutterEngine*)engine NS_DESIGNATED_INITIALIZER;
+                                   engine:(nonnull FlutterEngineSDK*)engine NS_DESIGNATED_INITIALIZER;
 
 /*
  * Returns the registered texture with the provided `textureID`.

@@ -340,7 +340,7 @@ UniqueEngine EmbedderConfigBuilder::InitializeEngine() const {
 }
 
 UniqueEngine EmbedderConfigBuilder::SetupEngine(bool run) const {
-  FlutterEngine engine = nullptr;
+  FlutterEngineSDK engine = nullptr;
   FlutterProjectArgs project_args = project_args_;
 
   std::vector<const char*> args;

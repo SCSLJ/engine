@@ -18,9 +18,9 @@
 #include "flutter/shell/platform/embedder/test_utils/proc_table_replacement.h"
 #include "flutter/testing/test_dart_native_resolver.h"
 
-@interface FlutterEngine (Test)
+@interface FlutterEngineSDK (Test)
 /**
- * The FlutterCompositor object currently in use by the FlutterEngine. This is
+ * The FlutterCompositor object currently in use by the FlutterEngineSDK. This is
  * either a FlutterOpenGLCompositor or a FlutterMetalCompositor.
  *
  * May be nil if the compositor has not been initialized yet.
@@ -31,13 +31,13 @@
 namespace flutter::testing {
 
 TEST_F(FlutterEngineTest, CanLaunch) {
-  FlutterEngine* engine = GetFlutterEngine();
+  FlutterEngineSDK* engine = GetFlutterEngineSDK();
   EXPECT_TRUE([engine runWithEntrypoint:@"main"]);
   EXPECT_TRUE(engine.running);
 }
 
 TEST_F(FlutterEngineTest, MessengerSend) {
-  FlutterEngine* engine = GetFlutterEngine();
+  FlutterEngineSDK* engine = GetFlutterEngineSDK();
   EXPECT_TRUE([engine runWithEntrypoint:@"main"]);
 
   NSData* test_message = [@"a message" dataUsingEncoding:NSUTF8StringEncoding];
@@ -56,7 +56,7 @@ TEST_F(FlutterEngineTest, MessengerSend) {
 }
 
 TEST_F(FlutterEngineTest, CanToggleAccessibility) {
-  FlutterEngine* engine = GetFlutterEngine();
+  FlutterEngineSDK* engine = GetFlutterEngineSDK();
   // Capture the update callbacks before the embedder API initializes.
   auto original_init = engine.embedderAPI.Initialize;
   std::function<void(const FlutterSemanticsNode*, void*)> update_node_callback;
@@ -156,7 +156,7 @@ TEST_F(FlutterEngineTest, CanToggleAccessibility) {
 }
 
 TEST_F(FlutterEngineTest, CanToggleAccessibilityWhenHeadless) {
-  FlutterEngine* engine = GetFlutterEngine();
+  FlutterEngineSDK* engine = GetFlutterEngineSDK();
   // Capture the update callbacks before the embedder API initializes.
   auto original_init = engine.embedderAPI.Initialize;
   std::function<void(const FlutterSemanticsNode*, void*)> update_node_callback;
@@ -238,7 +238,7 @@ TEST_F(FlutterEngineTest, CanToggleAccessibilityWhenHeadless) {
 }
 
 TEST_F(FlutterEngineTest, ResetsAccessibilityBridgeWhenSetsNewViewController) {
-  FlutterEngine* engine = GetFlutterEngine();
+  FlutterEngineSDK* engine = GetFlutterEngineSDK();
   // Capture the update callbacks before the embedder API initializes.
   auto original_init = engine.embedderAPI.Initialize;
   std::function<void(const FlutterSemanticsNode*, void*)> update_node_callback;
@@ -328,7 +328,7 @@ TEST_F(FlutterEngineTest, ResetsAccessibilityBridgeWhenSetsNewViewController) {
 }
 
 TEST_F(FlutterEngineTest, NativeCallbacks) {
-  FlutterEngine* engine = GetFlutterEngine();
+  FlutterEngineSDK* engine = GetFlutterEngineSDK();
   EXPECT_TRUE([engine runWithEntrypoint:@"native_callback"]);
   EXPECT_TRUE(engine.running);
 
@@ -343,12 +343,12 @@ TEST_F(FlutterEngineTest, NativeCallbacks) {
   ASSERT_TRUE(latch_called);
 }
 
-TEST(FlutterEngine, Compositor) {
+TEST(FlutterEngineSDK, Compositor) {
   NSString* fixtures = @(flutter::testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"test" project:project];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"test" project:project];
 
   FlutterViewController* viewController = [[FlutterViewController alloc] initWithProject:project];
   [viewController loadView];
@@ -378,21 +378,21 @@ TEST(FlutterEngine, Compositor) {
   [engine shutDownEngine];
 }
 
-TEST(FlutterEngine, DartEntrypointArguments) {
+TEST(FlutterEngineSDK, DartEntrypointArguments) {
   NSString* fixtures = @(flutter::testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
 
   project.dartEntrypointArguments = @[ @"arg1", @"arg2" ];
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"test" project:project];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"test" project:project];
 
   bool called = false;
   auto original_init = engine.embedderAPI.Initialize;
   engine.embedderAPI.Initialize = MOCK_ENGINE_PROC(
       Initialize, ([&called, &original_init](size_t version, const FlutterRendererConfig* config,
                                              const FlutterProjectArgs* args, void* user_data,
-                                             FLUTTER_API_SYMBOL(FlutterEngine) * engine_out) {
+                                             FLUTTER_API_SYMBOL(FlutterEngineSDK) * engine_out) {
         called = true;
         EXPECT_EQ(args->dart_entrypoint_argc, 2);
         NSString* arg1 = [[NSString alloc] initWithCString:args->dart_entrypoint_argv[0]
@@ -417,7 +417,7 @@ TEST(FlutterEngine, DartEntrypointArguments) {
 // new instance would create the channel before the first class is deallocated
 // and clears the channel.
 TEST_F(FlutterEngineTest, MessengerCleanupConnectionWorks) {
-  FlutterEngine* engine = GetFlutterEngine();
+  FlutterEngineSDK* engine = GetFlutterEngineSDK();
   EXPECT_TRUE([engine runWithEntrypoint:@"main"]);
 
   NSString* channel = @"_test_";

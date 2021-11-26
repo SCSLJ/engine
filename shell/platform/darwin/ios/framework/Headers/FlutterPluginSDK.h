@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @protocol FlutterPluginRegistrar;
-@protocol FlutterPluginRegistry;
+@protocol FlutterPluginRegistrySDK;
 
 #pragma mark -
 /**
@@ -175,11 +175,11 @@ NS_ASSUME_NONNULL_BEGIN
  * A plugin registration callback.
  *
  * Used for registering plugins with additional instances of
- * `FlutterPluginRegistry`.
+ * `FlutterPluginRegistrySDK`.
  *
  * @param registry The registry to register plugins with.
  */
-typedef void (*FlutterPluginRegistrantCallback)(NSObject<FlutterPluginRegistry>* registry);
+typedef void (*FlutterPluginRegistrantCallback)(NSObject<FlutterPluginRegistrySDK>* registry);
 
 #pragma mark -
 /**
@@ -188,13 +188,13 @@ typedef void (*FlutterPluginRegistrantCallback)(NSObject<FlutterPluginRegistry>*
  * Defines a set of optional callback methods and a method to set up the plugin
  * and register it to be called by other application components.
  */
-@protocol FlutterPlugin <NSObject, FlutterApplicationLifeCycleDelegate>
+@protocol FlutterPluginSDK <NSObject, FlutterApplicationLifeCycleDelegate>
 @required
 /**
  * Registers this plugin using the context information and callback registration
  * methods exposed by the given registrar.
  *
- * The registrar is obtained from a `FlutterPluginRegistry` which keeps track of
+ * The registrar is obtained from a `FlutterPluginRegistrySDK` which keeps track of
  * the identity of registered plugins and provides basic support for cross-plugin
  * coordination.
  *
@@ -210,7 +210,7 @@ typedef void (*FlutterPluginRegistrantCallback)(NSObject<FlutterPluginRegistry>*
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar;
 @optional
 /**
- * Set a callback for registering plugins to an additional `FlutterPluginRegistry`,
+ * Set a callback for registering plugins to an additional `FlutterPluginRegistrySDK`,
  * including headless `FlutterEngine` instances.
  *
  * This method is typically called from within an application's `AppDelegate` at
@@ -218,7 +218,7 @@ typedef void (*FlutterPluginRegistrantCallback)(NSObject<FlutterPluginRegistry>*
  * to register the application's plugins.
  *
  * @param callback A callback for registering some set of plugins with a
- *     `FlutterPluginRegistry`.
+ *     `FlutterPluginRegistrySDK`.
  */
 + (void)setPluginRegistrantCallback:(FlutterPluginRegistrantCallback)callback;
 @optional
@@ -236,7 +236,7 @@ typedef void (*FlutterPluginRegistrantCallback)(NSObject<FlutterPluginRegistry>*
  * provides the opportunity to do necessary cleanup.
  *
  * You will only receive this method if you registered your plugin instance with
- * the `FlutterEngine` via `-[FlutterPluginRegistry publish:]`.
+ * the `FlutterEngine` via `-[FlutterPluginRegistrySDK publish:]`.
  *
  * @param registrar The registrar that was used to publish the plugin.
  *
@@ -272,11 +272,11 @@ typedef enum {
 
 #pragma mark -
 /**
- * Registration context for a single `FlutterPlugin`, providing a one stop shop
+ * Registration context for a single `FlutterPluginSDK`, providing a one stop shop
  * for the plugin to access contextual information and register callbacks for
  * various application events.
  *
- * Registrars are obtained from a `FlutterPluginRegistry` which keeps track of
+ * Registrars are obtained from a `FlutterPluginRegistrySDK` which keeps track of
  * the identity of registered plugins and provides basic support for cross-plugin
  * coordination.
  */
@@ -333,7 +333,7 @@ typedef enum {
  * plugin's main class, for situations where external control or
  * interaction is needed.
  *
- * The published value will be available from the `FlutterPluginRegistry`.
+ * The published value will be available from the `FlutterPluginRegistrySDK`.
  * Repeated calls overwrite any previous publication.
  *
  * @param value The value to be published.
@@ -347,7 +347,7 @@ typedef enum {
  * @param delegate The receiving object, such as the plugin's main class.
  * @param channel The channel
  */
-- (void)addMethodCallDelegate:(NSObject<FlutterPlugin>*)delegate
+- (void)addMethodCallDelegate:(NSObject<FlutterPluginSDK>*)delegate
                       channel:(FlutterMethodChannel*)channel;
 
 /**
@@ -355,7 +355,7 @@ typedef enum {
  *
  * @param delegate The receiving object, such as the plugin's main class.
  */
-- (void)addApplicationDelegate:(NSObject<FlutterPlugin>*)delegate;
+- (void)addApplicationDelegate:(NSObject<FlutterPluginSDK>*)delegate;
 
 /**
  * Returns the file name for the given asset.
@@ -398,7 +398,7 @@ typedef enum {
  * Specifically, callbacks registered by the plugin via the registrar may be
  * relayed directly to the underlying iOS application objects.
  */
-@protocol FlutterPluginRegistry <NSObject>
+@protocol FlutterPluginRegistrySDK <NSObject>
 /**
  * Returns a registrar for registering a plugin.
  *
@@ -432,7 +432,7 @@ typedef enum {
  * For plugins to receive events from `UNUserNotificationCenter`, register this as the
  * `UNUserNotificationCenterDelegate`.
  */
-@protocol FlutterAppLifeCycleProvider
+@protocol FlutterAppLifeCycleProviderSDK
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
     <UNUserNotificationCenterDelegate>
 #endif
@@ -440,7 +440,7 @@ typedef enum {
 /**
  * Called when registering a new `FlutterApplicaitonLifeCycleDelegate`.
  *
- * See also: `-[FlutterAppDelegate addApplicationLifeCycleDelegate:]`
+ * See also: `-[FlutterAppDelegateSDK addApplicationLifeCycleDelegate:]`
  */
 - (void)addApplicationLifeCycleDelegate:(NSObject<FlutterApplicationLifeCycleDelegate>*)delegate;
 @end

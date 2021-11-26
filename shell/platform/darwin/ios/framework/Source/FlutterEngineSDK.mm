@@ -22,7 +22,7 @@
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterDartProject_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterIndirectScribbleDelegate.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterObservatoryPublisher.h"
-#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPlugin.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPluginSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterTextInputDelegate.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterViewController_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/connection_collection.h"
@@ -39,11 +39,11 @@ NSString* const FlutterEngineWillDealloc = @"FlutterEngineWillDealloc";
 static constexpr int kNumProfilerSamplesPerSec = 5;
 
 @interface FlutterEngineRegistrar : NSObject <FlutterPluginRegistrar>
-@property(nonatomic, assign) FlutterEngine* flutterEngine;
-- (instancetype)initWithPlugin:(NSString*)pluginKey flutterEngine:(FlutterEngine*)flutterEngine;
+@property(nonatomic, assign) FlutterEngineSDK* flutterEngine;
+- (instancetype)initWithPlugin:(NSString*)pluginKey flutterEngine:(FlutterEngineSDK*)flutterEngine;
 @end
 
-@interface FlutterEngine () <FlutterIndirectScribbleDelegate,
+@interface FlutterEngineSDK () <FlutterIndirectScribbleDelegate,
                              FlutterTextInputDelegate,
                              FlutterBinaryMessenger>
 // Maintains a dictionary of plugin names that have registered with the engine.  Used by
@@ -56,14 +56,14 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
 @property(nonatomic, retain) id<NSObject> flutterViewControllerWillDeallocObserver;
 @end
 
-@implementation FlutterEngine {
-  fml::scoped_nsobject<FlutterDartProject> _dartProject;
+@implementation FlutterEngineSDK {
+  fml::scoped_nsobject<FlutterDartProjectSDK> _dartProject;
   std::shared_ptr<flutter::ThreadHost> _threadHost;
   std::unique_ptr<flutter::Shell> _shell;
   NSString* _labelPrefix;
-  std::unique_ptr<fml::WeakPtrFactory<FlutterEngine>> _weakFactory;
+  std::unique_ptr<fml::WeakPtrFactory<FlutterEngineSDK>> _weakFactory;
 
-  fml::WeakPtr<FlutterViewController> _viewController;
+  fml::WeakPtr<FlutterViewControllerSDK> _viewController;
   fml::scoped_nsobject<FlutterObservatoryPublisher> _publisher;
 
   std::shared_ptr<flutter::FlutterPlatformViewsController> _platformViewsController;
@@ -72,7 +72,7 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
   std::shared_ptr<flutter::SamplingProfiler> _profiler;
 
   // Channels
-  fml::scoped_nsobject<FlutterPlatformPlugin> _platformPlugin;
+  fml::scoped_nsobject<FlutterPlatformPluginSDK> _platformPlugin;
   fml::scoped_nsobject<FlutterTextInputPlugin> _textInputPlugin;
   fml::scoped_nsobject<FlutterRestorationPlugin> _restorationPlugin;
   fml::scoped_nsobject<FlutterMethodChannel> _localizationChannel;
@@ -95,19 +95,19 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
 }
 
 - (instancetype)init {
-  return [self initWithName:@"FlutterEngine" project:nil allowHeadlessExecution:YES];
+  return [self initWithName:@"FlutterEngineSDK" project:nil allowHeadlessExecution:YES];
 }
 
 - (instancetype)initWithName:(NSString*)labelPrefix {
   return [self initWithName:labelPrefix project:nil allowHeadlessExecution:YES];
 }
 
-- (instancetype)initWithName:(NSString*)labelPrefix project:(FlutterDartProject*)project {
+- (instancetype)initWithName:(NSString*)labelPrefix project:(FlutterDartProjectSDK*)project {
   return [self initWithName:labelPrefix project:project allowHeadlessExecution:YES];
 }
 
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(FlutterDartProject*)project
+                     project:(FlutterDartProjectSDK*)project
       allowHeadlessExecution:(BOOL)allowHeadlessExecution {
   return [self initWithName:labelPrefix
                      project:project
@@ -116,7 +116,7 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
 }
 
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(FlutterDartProject*)project
+                     project:(FlutterDartProjectSDK*)project
       allowHeadlessExecution:(BOOL)allowHeadlessExecution
           restorationEnabled:(BOOL)restorationEnabled {
   self = [super init];
@@ -127,17 +127,17 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
   _allowHeadlessExecution = allowHeadlessExecution;
   _labelPrefix = [labelPrefix copy];
 
-  _weakFactory = std::make_unique<fml::WeakPtrFactory<FlutterEngine>>(self);
+  _weakFactory = std::make_unique<fml::WeakPtrFactory<FlutterEngineSDK>>(self);
 
   if (project == nil) {
-    _dartProject.reset([[FlutterDartProject alloc] init]);
+    _dartProject.reset([[FlutterDartProjectSDK alloc] init]);
   } else {
     _dartProject.reset([project retain]);
   }
 
   if (!EnableTracingIfNecessary([_dartProject.get() settings])) {
     NSLog(
-        @"Cannot create a FlutterEngine instance in debug mode without Flutter tooling or "
+        @"Cannot create a FlutterEngineSDK instance in debug mode without Flutter tooling or "
         @"Xcode.\n\nTo launch in debug mode in iOS 14+, run flutter run from Flutter tools, run "
         @"from an IDE with a Flutter IDE plugin or run the iOS project from Xcode.\nAlternatively "
         @"profile and release mode apps can be launched from the home screen.");
@@ -232,7 +232,7 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
   return *_shell;
 }
 
-- (fml::WeakPtr<FlutterEngine>)getWeakPtr {
+- (fml::WeakPtr<FlutterEngineSDK>)getWeakPtr {
   return _weakFactory->GetWeakPtr();
 }
 
@@ -314,16 +314,16 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
   self.iosPlatformView->SetSemanticsEnabled(true);
 }
 
-- (void)setViewController:(FlutterViewController*)viewController {
+- (void)setViewController:(FlutterViewControllerSDK*)viewController {
   FML_DCHECK(self.iosPlatformView);
   _viewController =
-      viewController ? [viewController getWeakPtr] : fml::WeakPtr<FlutterViewController>();
+      viewController ? [viewController getWeakPtr] : fml::WeakPtr<FlutterViewControllerSDK>();
   self.iosPlatformView->SetOwnerViewController(_viewController);
   [self maybeSetupPlatformViewChannels];
   _textInputPlugin.get().viewController = viewController;
 
   if (viewController) {
-    __block FlutterEngine* blockSelf = self;
+    __block FlutterEngineSDK* blockSelf = self;
     self.flutterViewControllerWillDeallocObserver =
         [[NSNotificationCenter defaultCenter] addObserverForName:FlutterViewControllerWillDealloc
                                                           object:viewController
@@ -377,14 +377,14 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
   _platformViewsController.reset();
 }
 
-- (FlutterViewController*)viewController {
+- (FlutterViewControllerSDK*)viewController {
   if (!_viewController) {
     return nil;
   }
   return _viewController.get();
 }
 
-- (FlutterPlatformPlugin*)platformPlugin {
+- (FlutterPlatformPluginSDK*)platformPlugin {
   return _platformPlugin.get();
 }
 - (std::shared_ptr<flutter::FlutterPlatformViewsController>&)platformViewsController {
@@ -456,7 +456,7 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
 - (void)setupChannels {
   // This will be invoked once the shell is done setting up and the isolate ID
   // for the UI isolate is available.
-  fml::WeakPtr<FlutterEngine> weakSelf = [self getWeakPtr];
+  fml::WeakPtr<FlutterEngineSDK> weakSelf = [self getWeakPtr];
   [_binaryMessenger setMessageHandlerOnChannel:@"flutter/isolate"
                           binaryMessageHandler:^(NSData* message, FlutterBinaryReply reply) {
                             if (weakSelf) {
@@ -527,7 +527,7 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
   _textInputPlugin.get().indirectScribbleDelegate = self;
   [_textInputPlugin.get() setupIndirectScribbleInteraction:self.viewController];
 
-  _platformPlugin.reset([[FlutterPlatformPlugin alloc] initWithEngine:[self getWeakPtr]]);
+  _platformPlugin.reset([[FlutterPlatformPluginSDK alloc] initWithEngine:[self getWeakPtr]]);
 
   _restorationPlugin.reset([[FlutterRestorationPlugin alloc]
          initWithChannel:_restorationChannel.get()
@@ -536,12 +536,12 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
 
 - (void)maybeSetupPlatformViewChannels {
   if (_shell && self.shell.IsSetup()) {
-    FlutterPlatformPlugin* platformPlugin = _platformPlugin.get();
+    FlutterPlatformPluginSDK* platformPlugin = _platformPlugin.get();
     [_platformChannel.get() setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
       [platformPlugin handleMethodCall:call result:result];
     }];
 
-    fml::WeakPtr<FlutterEngine> weakSelf = [self getWeakPtr];
+    fml::WeakPtr<FlutterEngineSDK> weakSelf = [self getWeakPtr];
     [_platformViewsChannel.get()
         setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
           if (weakSelf) {
@@ -601,7 +601,7 @@ static constexpr int kNumProfilerSamplesPerSec = 5;
 
   uint32_t threadHostType = flutter::ThreadHost::Type::UI | flutter::ThreadHost::Type::RASTER |
                             flutter::ThreadHost::Type::IO;
-  if ([FlutterEngine isProfilerEnabled]) {
+  if ([FlutterEngineSDK isProfilerEnabled]) {
     threadHostType = threadHostType | flutter::ThreadHost::Type::Profiler;
   }
   return {threadLabel.UTF8String,  // label
@@ -626,7 +626,7 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
          libraryURI:(NSString*)libraryURI
        initialRoute:(NSString*)initialRoute {
   if (_shell != nullptr) {
-    FML_LOG(WARNING) << "This FlutterEngine was already invoked.";
+    FML_LOG(WARNING) << "This FlutterEngineSDK was already invoked.";
     return NO;
   }
 
@@ -639,9 +639,9 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
 
   SetEntryPoint(&settings, entrypoint, libraryURI);
 
-  NSString* threadLabel = [FlutterEngine generateThreadLabel:_labelPrefix];
+  NSString* threadLabel = [FlutterEngineSDK generateThreadLabel:_labelPrefix];
   _threadHost = std::make_shared<flutter::ThreadHost>();
-  *_threadHost = [FlutterEngine makeThreadHost:threadLabel];
+  *_threadHost = [FlutterEngineSDK makeThreadHost:threadLabel];
 
   // Lambda captures by pointers to ObjC objects are fine here because the
   // create call is synchronous.
@@ -674,12 +674,12 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
       /*is_gpu_disabled=*/_isGpuDisabled);
 
   if (shell == nullptr) {
-    FML_LOG(ERROR) << "Could not start a shell FlutterEngine with entrypoint: "
+    FML_LOG(ERROR) << "Could not start a shell FlutterEngineSDK with entrypoint: "
                    << entrypoint.UTF8String;
   } else {
     [self setupShell:std::move(shell)
         withObservatoryPublication:settings.enable_observatory_publication];
-    if ([FlutterEngine isProfilerEnabled]) {
+    if ([FlutterEngineSDK isProfilerEnabled]) {
       [self startProfiler];
     }
   }
@@ -914,7 +914,7 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
           binaryReply:(FlutterBinaryReply)callback {
   NSParameterAssert(channel);
   NSAssert(_shell && _shell->IsSetup(),
-           @"Sending a message before the FlutterEngine has been run.");
+           @"Sending a message before the FlutterEngineSDK has been run.");
   fml::RefPtr<flutter::PlatformMessageResponseDarwin> response =
       (callback == nil) ? nullptr
                         : fml::MakeRefCounted<flutter::PlatformMessageResponseDarwin>(
@@ -938,7 +938,7 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
     self.iosPlatformView->GetPlatformMessageRouter().SetMessageHandler(channel.UTF8String, handler);
     return _connections->AquireConnection(channel.UTF8String);
   } else {
-    NSAssert(!handler, @"Setting a message handler before the FlutterEngine has been run.");
+    NSAssert(!handler, @"Setting a message handler before the FlutterEngineSDK has been run.");
     // Setting a handler to nil for a channel that has not yet been set up is a no-op.
     return flutter::ConnectionCollection::MakeErrorConnection(-1);
   }
@@ -970,24 +970,23 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
 }
 
 - (NSString*)lookupKeyForAsset:(NSString*)asset {
-  return [FlutterDartProject lookupKeyForAsset:asset];
+  return [FlutterDartProjectSDK lookupKeyForAsset:asset];
 }
 
 - (NSString*)lookupKeyForAsset:(NSString*)asset fromPackage:(NSString*)package {
-  return [FlutterDartProject lookupKeyForAsset:asset fromPackage:package];
+  return [FlutterDartProjectSDK lookupKeyForAsset:asset fromPackage:package];
 }
 
-- (id<FlutterPluginRegistry>)pluginRegistry {
+- (id<FlutterPluginRegistrySDK>)pluginRegistry {
   return self;
 }
 
-#pragma mark - FlutterPluginRegistry
+#pragma mark - FlutterPluginRegistrySDK
 
 - (NSObject<FlutterPluginRegistrar>*)registrarForPlugin:(NSString*)pluginKey {
   NSAssert(self.pluginPublications[pluginKey] == nil, @"Duplicate plugin key: %@", pluginKey);
   self.pluginPublications[pluginKey] = [NSNull null];
-  FlutterEngineRegistrar* result = [[FlutterEngineRegistrar alloc] initWithPlugin:pluginKey
-                                                                    flutterEngine:self];
+  FlutterEngineRegistrar* result = [[FlutterEngineRegistrar alloc] initWithPlugin:pluginKey flutterEngine:self];
   self.registrars[pluginKey] = result;
   return [result autorelease];
 }
@@ -1062,11 +1061,11 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
   });
 }
 
-- (FlutterEngine*)spawnWithEntrypoint:(/*nullable*/ NSString*)entrypoint
+- (FlutterEngineSDK*)spawnWithEntrypoint:(/*nullable*/ NSString*)entrypoint
                            libraryURI:(/*nullable*/ NSString*)libraryURI
                          initialRoute:(/*nullable*/ NSString*)initialRoute {
   NSAssert(_shell, @"Spawning from an engine without a shell (possibly not run).");
-  FlutterEngine* result = [[FlutterEngine alloc] initWithName:_labelPrefix
+  FlutterEngineSDK* result = [[FlutterEngineSDK alloc] initWithName:_labelPrefix
                                                       project:_dartProject.get()
                                        allowHeadlessExecution:_allowHeadlessExecution];
 
@@ -1119,7 +1118,7 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
   NSString* _pluginKey;
 }
 
-- (instancetype)initWithPlugin:(NSString*)pluginKey flutterEngine:(FlutterEngine*)flutterEngine {
+- (instancetype)initWithPlugin:(NSString*)pluginKey flutterEngine:(FlutterEngineSDK*)flutterEngine {
   self = [super init];
   NSAssert(self, @"Super init cannot be nil");
   _pluginKey = [pluginKey copy];
@@ -1144,18 +1143,18 @@ static void SetEntryPoint(flutter::Settings* settings, NSString* entrypoint, NSS
   _flutterEngine.pluginPublications[_pluginKey] = value;
 }
 
-- (void)addMethodCallDelegate:(NSObject<FlutterPlugin>*)delegate
+- (void)addMethodCallDelegate:(NSObject<FlutterPluginSDK>*)delegate
                       channel:(FlutterMethodChannel*)channel {
   [channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
     [delegate handleMethodCall:call result:result];
   }];
 }
 
-- (void)addApplicationDelegate:(NSObject<FlutterPlugin>*)delegate {
+- (void)addApplicationDelegate:(NSObject<FlutterPluginSDK>*)delegate {
   id<UIApplicationDelegate> appDelegate = [[UIApplication sharedApplication] delegate];
-  if ([appDelegate conformsToProtocol:@protocol(FlutterAppLifeCycleProvider)]) {
-    id<FlutterAppLifeCycleProvider> lifeCycleProvider =
-        (id<FlutterAppLifeCycleProvider>)appDelegate;
+  if ([appDelegate conformsToProtocol:@protocol(FlutterAppLifeCycleProviderSDK)]) {
+    id<FlutterAppLifeCycleProviderSDK> lifeCycleProvider =
+        (id<FlutterAppLifeCycleProviderSDK>)appDelegate;
     [lifeCycleProvider addApplicationLifeCycleDelegate:delegate];
   }
 }

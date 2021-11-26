@@ -10,7 +10,7 @@
 #import "FlutterMacros.h"
 
 /**
- * A set of Flutter and Dart assets used by a `FlutterEngine` to initialize execution.
+ * A set of Flutter and Dart assets used by a `FlutterEngineSDK` to initialize execution.
  *
  * TODO(stuartmorgan): Align API with FlutterDartProject, and combine.
  */

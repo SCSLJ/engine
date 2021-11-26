@@ -15,17 +15,17 @@ namespace flutter {
 namespace testing {
 
 struct UniqueEngineTraits {
-  static FlutterEngine InvalidValue() { return nullptr; }
+  static FlutterEngineSDK InvalidValue() { return nullptr; }
 
-  static bool IsValid(const FlutterEngine& value) { return value != nullptr; }
+  static bool IsValid(const FlutterEngineSDK& value) { return value != nullptr; }
 
-  static void Free(FlutterEngine& engine) {
+  static void Free(FlutterEngineSDK& engine) {
     auto result = FlutterEngineShutdown(engine);
     FML_CHECK(result == kSuccess);
   }
 };
 
-using UniqueEngine = fml::UniqueObject<FlutterEngine, UniqueEngineTraits>;
+using UniqueEngine = fml::UniqueObject<FlutterEngineSDK, UniqueEngineTraits>;
 
 class EmbedderConfigBuilder {
  public:

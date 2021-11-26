@@ -24,15 +24,15 @@
 @property(nonatomic, readonly, nonnull) FlutterTextInputPlugin* textInputPlugin;
 
 /**
- * Initializes this FlutterViewController with the specified `FlutterEngine`.
+ * Initializes this FlutterViewController with the specified `FlutterEngineSDK`.
  *
  * The initialized viewcontroller will attach itself to the engine as part of this process.
  *
- * @param engine The `FlutterEngine` instance to attach to. Cannot be nil.
+ * @param engine The `FlutterEngineSDK` instance to attach to. Cannot be nil.
  * @param nibName The NIB name to initialize this controller with.
  * @param nibBundle The NIB bundle.
  */
-- (nonnull instancetype)initWithEngine:(nonnull FlutterEngine*)engine
+- (nonnull instancetype)initWithEngine:(nonnull FlutterEngineSDK*)engine
                                nibName:(nullable NSString*)nibName
                                 bundle:(nullable NSBundle*)nibBundle NS_DESIGNATED_INITIALIZER;
 

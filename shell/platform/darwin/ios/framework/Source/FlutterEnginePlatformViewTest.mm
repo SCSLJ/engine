@@ -85,8 +85,8 @@ flutter::FakeDelegate fake_delegate;
 }
 
 - (void)testCallsNotifyLowMemory {
-  id project = OCMClassMock([FlutterDartProject class]);
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"tester" project:project];
+  id project = OCMClassMock([FlutterDartProjectSDK class]);
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"tester" project:project];
   XCTAssertNotNil(engine);
   id mockEngine = OCMPartialMock(engine);
   OCMStub([mockEngine notifyLowMemory]);

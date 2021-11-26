@@ -9,7 +9,7 @@
 
 /**
  * Provides the renderer config needed to initialize the embedder engine. This is initialized during
- * FlutterEngine creation and then attached to the FlutterView once the FlutterViewController is
+ * FlutterEngineSDK creation and then attached to the FlutterView once the FlutterViewController is
  * initialized.
  */
 @interface FlutterMetalRenderer : FlutterTextureRegistrar <FlutterRenderer>

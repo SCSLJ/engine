@@ -19,7 +19,7 @@ void FlutterEngineTest::SetUp() {
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
   project_.rootIsolateCreateCallback = FlutterEngineTest::IsolateCreateCallback;
-  engine_ = [[FlutterEngine alloc] initWithName:@"test"
+  engine_ = [[FlutterEngineSDK alloc] initWithName:@"test"
                                         project:project_
                          allowHeadlessExecution:true];
 }

@@ -13,16 +13,16 @@
 #include "flutter/fml/platform/darwin/scoped_nsobject.h"
 #include "flutter/shell/common/platform_view.h"
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterTexture.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterView.h"
-#import "flutter/shell/platform/darwin/ios/framework/Source/accessibility_bridge.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/accessibility_bridge_sdk.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/platform_message_router.h"
 #import "flutter/shell/platform/darwin/ios/ios_context.h"
 #import "flutter/shell/platform/darwin/ios/ios_external_view_embedder.h"
 #import "flutter/shell/platform/darwin/ios/ios_surface.h"
 #import "flutter/shell/platform/darwin/ios/rendering_api_selection.h"
 
-@class FlutterViewController;
+@class FlutterViewControllerSDK;
 
 namespace flutter {
 
@@ -31,12 +31,12 @@ namespace flutter {
  *
  * The shell provides and requests for UI related data and this PlatformView subclass fulfills
  * it with iOS specific capabilities. As an example, the iOS embedding (the `FlutterEngine` and the
- * `FlutterViewController`) sends pointer data to the shell and receives the shell's request for a
+ * `FlutterViewControllerSDK`) sends pointer data to the shell and receives the shell's request for a
  * Skia GrDirectContext and supplies it.
  *
  * Despite the name "view", this class is unrelated to UIViews on iOS and doesn't have the same
  * lifecycle. It's a long lived bridge owned by the `FlutterEngine` and can be attached and
- * detached sequentially to multiple `FlutterViewController`s and `FlutterView`s.
+ * detached sequentially to multiple `FlutterViewControllerSDK`s and `FlutterView`s.
  */
 class PlatformViewIOS final : public PlatformView {
  public:
@@ -60,30 +60,30 @@ class PlatformViewIOS final : public PlatformView {
   PlatformMessageRouter& GetPlatformMessageRouter();
 
   /**
-   * Returns the `FlutterViewController` currently attached to the `FlutterEngine` owning
+   * Returns the `FlutterViewControllerSDK` currently attached to the `FlutterEngine` owning
    * this PlatformViewIOS.
    */
-  fml::WeakPtr<FlutterViewController> GetOwnerViewController() const;
+  fml::WeakPtr<FlutterViewControllerSDK> GetOwnerViewController() const;
 
   /**
-   * Updates the `FlutterViewController` currently attached to the `FlutterEngine` owning
+   * Updates the `FlutterViewControllerSDK` currently attached to the `FlutterEngine` owning
    * this PlatformViewIOS. This should be updated when the `FlutterEngine`
-   * is given a new `FlutterViewController`.
+   * is given a new `FlutterViewControllerSDK`.
    */
-  void SetOwnerViewController(fml::WeakPtr<FlutterViewController> owner_controller);
+  void SetOwnerViewController(fml::WeakPtr<FlutterViewControllerSDK> owner_controller);
 
   /**
-   * Called one time per `FlutterViewController` when the `FlutterViewController`'s
+   * Called one time per `FlutterViewControllerSDK` when the `FlutterViewControllerSDK`'s
    * UIView is first loaded.
    *
-   * Can be used to perform late initialization after `FlutterViewController`'s
+   * Can be used to perform late initialization after `FlutterViewControllerSDK`'s
    * init.
    */
   void attachView();
 
   /**
    * Called through when an external texture such as video or camera is
-   * given to the `FlutterEngine` or `FlutterViewController`.
+   * given to the `FlutterEngine` or `FlutterViewControllerSDK`.
    */
   void RegisterExternalTexture(int64_t id, NSObject<FlutterTexture>* texture);
 
@@ -132,7 +132,7 @@ class PlatformViewIOS final : public PlatformView {
     std::function<void(bool)> set_semantics_enabled_;
   };
 
-  fml::WeakPtr<FlutterViewController> owner_controller_;
+  fml::WeakPtr<FlutterViewControllerSDK> owner_controller_;
   // Since the `ios_surface_` is created on the platform thread but
   // used on the raster thread we need to protect it with a mutex.
   std::mutex ios_surface_mutex_;

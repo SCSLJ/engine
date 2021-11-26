@@ -23,7 +23,7 @@ static NSString* const AccessibilityExpandedChanged = @"AXExpandedChanged";
 static NSString* const AccessibilityMenuItemSelectedNotification = @"AXMenuItemSelected";
 
 AccessibilityBridgeMacDelegate::AccessibilityBridgeMacDelegate(
-    __weak FlutterEngine* flutter_engine,
+    __weak FlutterEngineSDK* flutter_engine,
     __weak FlutterViewController* view_controller)
     : flutter_engine_(flutter_engine), view_controller_(view_controller) {}
 

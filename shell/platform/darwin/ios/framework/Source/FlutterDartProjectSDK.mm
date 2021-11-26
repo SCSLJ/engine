@@ -20,7 +20,7 @@
 #include "flutter/shell/common/shell.h"
 #include "flutter/shell/common/switches.h"
 #import "flutter/shell/platform/darwin/common/command_line.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 
 extern "C" {
 #if FLUTTER_RUNTIME_MODE == FLUTTER_RUNTIME_MODE_DEBUG
@@ -42,11 +42,13 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
   // 4. Settings from the main NSBundle and default values.
 
   NSBundle* mainBundle = [NSBundle mainBundle];
-  NSBundle* engineBundle = [NSBundle bundleForClass:[FlutterViewController class]];
+  NSBundle* engineBundle = [NSBundle bundleForClass:[FlutterViewControllerSDK class]];
+  NSLog(@"mainBundle : %@",mainBundle);
+  NSLog(@"engineBundle : %@",engineBundle);
 
   bool hasExplicitBundle = bundle != nil;
   if (bundle == nil) {
-    bundle = [NSBundle bundleWithIdentifier:[FlutterDartProject defaultBundleIdentifier]];
+    bundle = [NSBundle bundleWithIdentifier:[FlutterDartProjectSDK defaultBundleIdentifier]];
   }
   if (bundle == nil) {
     bundle = mainBundle;
@@ -108,8 +110,9 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
     // In case the application bundle is still not specified, look for the App.framework in the
     // Frameworks directory.
     if (settings.application_library_path.size() == 0) {
-      NSString* applicationFrameworkPath = [mainBundle pathForResource:@"Frameworks/App.framework"
-                                                                ofType:@""];
+      
+      NSString* applicationFrameworkPath = [mainBundle pathForResource:@"Frameworks/AppSDK.framework" ofType:@""];
+      NSLog(@"获取app framework path : %@",applicationFrameworkPath);
       if (applicationFrameworkPath.length > 0) {
         NSString* executablePath =
             [NSBundle bundleWithPath:applicationFrameworkPath].executablePath;
@@ -122,7 +125,7 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
 
   // Checks to see if the flutter assets directory is already present.
   if (settings.assets_path.size() == 0) {
-    NSString* assetsName = [FlutterDartProject flutterAssetsName:bundle];
+    NSString* assetsName = [FlutterDartProjectSDK flutterAssetsName:bundle];
     NSString* assetsPath = [bundle pathForResource:assetsName ofType:@""];
 
     if (assetsPath.length == 0) {
@@ -184,7 +187,7 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
   return settings;
 }
 
-@implementation FlutterDartProject {
+@implementation FlutterDartProjectSDK {
   flutter::Settings _settings;
 }
 
@@ -255,14 +258,15 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
 
 + (NSString*)flutterAssetsName:(NSBundle*)bundle {
   if (bundle == nil) {
-    bundle = [NSBundle bundleWithIdentifier:[FlutterDartProject defaultBundleIdentifier]];
+    bundle = [NSBundle bundleWithIdentifier:[FlutterDartProjectSDK defaultBundleIdentifier]];
   }
   if (bundle == nil) {
     bundle = [NSBundle mainBundle];
   }
   NSString* flutterAssetsName = [bundle objectForInfoDictionaryKey:@"FLTAssetsPath"];
   if (flutterAssetsName == nil) {
-    flutterAssetsName = @"Frameworks/App.framework/flutter_assets";
+    flutterAssetsName = @"Frameworks/AppSDK.framework/flutter_assets";
+     NSLog(@"获取app AssetsName : %@",flutterAssetsName);
   }
   return flutterAssetsName;
 }
@@ -300,7 +304,7 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
 }
 
 + (NSString*)lookupKeyForAsset:(NSString*)asset fromBundle:(nullable NSBundle*)bundle {
-  NSString* flutterAssetsName = [FlutterDartProject flutterAssetsName:bundle];
+  NSString* flutterAssetsName = [FlutterDartProjectSDK flutterAssetsName:bundle];
   return [NSString stringWithFormat:@"%@/%@", flutterAssetsName, asset];
 }
 
@@ -316,7 +320,7 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
 }
 
 + (NSString*)defaultBundleIdentifier {
-  return @"io.flutter.flutter.app";
+  return @"io.flutter.flutter.app--sdk";
 }
 
 #pragma mark - Settings utilities
@@ -340,3 +344,4 @@ flutter::Settings FLTDefaultSettingsForBundle(NSBundle* bundle) {
 #pragma mark - PlatformData utilities
 
 @end
+

@@ -12,19 +12,19 @@
 
 #pragma mark - Static callbacks that require the engine.
 
-static FlutterMetalTexture OnGetNextDrawable(FlutterEngine* engine,
+static FlutterMetalTexture OnGetNextDrawable(FlutterEngineSDK* engine,
                                              const FlutterFrameInfo* frameInfo) {
   CGSize size = CGSizeMake(frameInfo->size.width, frameInfo->size.height);
   FlutterMetalRenderer* metalRenderer = reinterpret_cast<FlutterMetalRenderer*>(engine.renderer);
   return [metalRenderer createTextureForSize:size];
 }
 
-static bool OnPresentDrawable(FlutterEngine* engine, const FlutterMetalTexture* texture) {
+static bool OnPresentDrawable(FlutterEngineSDK* engine, const FlutterMetalTexture* texture) {
   FlutterMetalRenderer* metalRenderer = reinterpret_cast<FlutterMetalRenderer*>(engine.renderer);
   return [metalRenderer present:texture->texture_id];
 }
 
-static bool OnAcquireExternalTexture(FlutterEngine* engine,
+static bool OnAcquireExternalTexture(FlutterEngineSDK* engine,
                                      int64_t textureIdentifier,
                                      size_t width,
                                      size_t height,
@@ -36,14 +36,14 @@ static bool OnAcquireExternalTexture(FlutterEngine* engine,
 #pragma mark - FlutterMetalRenderer implementation
 
 @implementation FlutterMetalRenderer {
-  __weak FlutterEngine* _engine;
+  __weak FlutterEngineSDK* _engine;
 
   FlutterView* _flutterView;
 
   FlutterDarwinContextMetal* _darwinMetalContext;
 }
 
-- (instancetype)initWithFlutterEngine:(nonnull FlutterEngine*)flutterEngine {
+- (instancetype)initWithFlutterEngine:(nonnull FlutterEngineSDK*)flutterEngine {
   self = [super initWithDelegate:self engine:flutterEngine];
   if (self) {
     _engine = flutterEngine;

@@ -4,7 +4,7 @@
 
 @class FlutterViewController;
 
-@interface FlutterAppDelegate (Test)
+@interface FlutterAppDelegateSDK (Test)
 @property(nonatomic, copy) FlutterViewController* (^rootFlutterViewControllerGetter)(void);
 
 @end

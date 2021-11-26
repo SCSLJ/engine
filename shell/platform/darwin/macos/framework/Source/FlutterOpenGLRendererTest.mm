@@ -13,7 +13,7 @@
 #include "flutter/shell/platform/embedder/test_utils/proc_table_replacement.h"
 #include "flutter/testing/testing.h"
 
-@interface TestOpenGLEngine : FlutterEngine
+@interface TestOpenGLEngine : FlutterEngineSDK
 
 @property(nonatomic, readwrite) id<FlutterRenderer> renderer;
 
@@ -42,7 +42,7 @@
 namespace flutter::testing {
 
 TEST(FlutterOpenGLRenderer, RegisterExternalTexture) {
-  FlutterEngine* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
+  FlutterEngineSDK* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
   EXPECT_TRUE([engine runWithEntrypoint:@"main"]);
 
   id<FlutterTexture> flutterTexture = OCMProtocolMock(@protocol(FlutterTexture));
@@ -63,7 +63,7 @@ TEST(FlutterOpenGLRenderer, RegisterExternalTexture) {
 }
 
 TEST(FlutterOpenGLRenderer, UnregisterExternalTexture) {
-  FlutterEngine* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
+  FlutterEngineSDK* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
   EXPECT_TRUE([engine runWithEntrypoint:@"main"]);
 
   id<FlutterTexture> flutterTexture = OCMProtocolMock(@protocol(FlutterTexture));
@@ -85,7 +85,7 @@ TEST(FlutterOpenGLRenderer, UnregisterExternalTexture) {
 }
 
 TEST(FlutterOpenGLRenderer, MarkExternalTextureFrameAvailable) {
-  FlutterEngine* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
+  FlutterEngineSDK* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
   EXPECT_TRUE([engine runWithEntrypoint:@"main"]);
 
   id<FlutterTexture> flutterTexture = OCMProtocolMock(@protocol(FlutterTexture));
@@ -107,7 +107,7 @@ TEST(FlutterOpenGLRenderer, MarkExternalTextureFrameAvailable) {
 }
 
 TEST(FlutterOpenGLRenderer, PresetDelegatesToFlutterView) {
-  FlutterEngine* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
+  FlutterEngineSDK* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
   FlutterOpenGLRenderer* renderer = [[FlutterOpenGLRenderer alloc] initWithFlutterEngine:engine];
   id mockFlutterView = OCMClassMock([FlutterView class]);
   [[mockFlutterView expect] present];
@@ -117,7 +117,7 @@ TEST(FlutterOpenGLRenderer, PresetDelegatesToFlutterView) {
 }
 
 TEST(FlutterOpenGLRenderer, FBOReturnedByFlutterView) {
-  FlutterEngine* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
+  FlutterEngineSDK* engine = [[TestOpenGLEngine alloc] initWithGLRenderer];
   FlutterOpenGLRenderer* renderer = [[FlutterOpenGLRenderer alloc] initWithFlutterEngine:engine];
   id mockFlutterView = OCMClassMock([FlutterView class]);
   FlutterFrameInfo frameInfo;

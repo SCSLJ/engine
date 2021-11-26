@@ -9,7 +9,7 @@
 
 #include "flutter/shell/platform/common/accessibility_bridge.h"
 
-@class FlutterEngine;
+@class FlutterEngineSDK;
 @class FlutterViewController;
 
 namespace flutter {
@@ -21,9 +21,9 @@ class AccessibilityBridgeMacDelegate : public AccessibilityBridge::Accessibility
  public:
   //---------------------------------------------------------------------------
   /// @brief      Creates an AccessibilityBridgeMacDelegate.
-  /// @param[in]  flutter_engine     The weak reference to the FlutterEngine.
+  /// @param[in]  flutter_engine     The weak reference to the FlutterEngineSDK.
   /// @param[in]  view_controller    The weak reference to the FlutterViewController.
-  explicit AccessibilityBridgeMacDelegate(__weak FlutterEngine* flutter_engine,
+  explicit AccessibilityBridgeMacDelegate(__weak FlutterEngineSDK* flutter_engine,
                                           __weak FlutterViewController* view_controller);
   virtual ~AccessibilityBridgeMacDelegate() = default;
 
@@ -78,7 +78,7 @@ class AccessibilityBridgeMacDelegate : public AccessibilityBridge::Accessibility
   std::vector<NSAccessibilityEvent> MacOSEventsFromAXEvent(ui::AXEventGenerator::Event event_type,
                                                            const ui::AXNode& ax_node) const;
 
-  __weak FlutterEngine* flutter_engine_;
+  __weak FlutterEngineSDK* flutter_engine_;
   __weak FlutterViewController* view_controller_;
 };
 

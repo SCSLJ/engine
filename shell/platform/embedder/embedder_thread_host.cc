@@ -108,7 +108,7 @@ static fml::RefPtr<fml::TaskRunner> GetCurrentThreadTaskRunner() {
   return fml::MessageLoop::GetCurrent().GetTaskRunner();
 }
 
-constexpr const char* kFlutterThreadName = "io.flutter";
+constexpr const char* kFlutterThreadName = "io.flutter--sdk";
 
 // static
 std::unique_ptr<EmbedderThreadHost>

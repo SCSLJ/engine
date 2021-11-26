@@ -5,7 +5,7 @@
 #ifndef FLUTTER_SHELL_PLATFORM_DARWIN_IOS_FRAMEWORK_SOURCE_FLUTTER_ENGINE_INTERNAL_H_
 #define FLUTTER_SHELL_PLATFORM_DARWIN_IOS_FRAMEWORK_SOURCE_FLUTTER_ENGINE_INTERNAL_H_
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngine.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngineSDK.h"
 
 #include "flutter/fml/memory/weak_ptr.h"
 #include "flutter/fml/task_runner.h"
@@ -19,10 +19,10 @@
 // doesn't use the embedding API, just some structures from it.
 #include "flutter/shell/platform/embedder/embedder.h"
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngine.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterEngineSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterDartProject_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterIndirectScribbleDelegate.h"
-#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPlugin.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPluginSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformViews_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterRestorationPlugin.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterTextInputDelegate.h"
@@ -31,7 +31,7 @@
 
 extern NSString* _Nonnull const FlutterEngineWillDealloc;
 
-@interface FlutterEngine () <FlutterViewEngineDelegate>
+@interface FlutterEngineSDK () <FlutterViewEngineDelegate>
 
 - (flutter::Shell&)shell;
 
@@ -46,7 +46,7 @@ extern NSString* _Nonnull const FlutterEngineWillDealloc;
 - (flutter::Rasterizer::Screenshot)screenshot:(flutter::Rasterizer::ScreenshotType)type
                                  base64Encode:(bool)base64Encode;
 
-- (nonnull FlutterPlatformPlugin*)platformPlugin;
+- (nonnull FlutterPlatformPluginSDK*)platformPlugin;
 - (std::shared_ptr<flutter::FlutterPlatformViewsController>&)platformViewsController;
 - (nonnull FlutterTextInputPlugin*)textInputPlugin;
 - (nonnull FlutterRestorationPlugin*)restorationPlugin;
@@ -62,12 +62,12 @@ extern NSString* _Nonnull const FlutterEngineWillDealloc;
                  callback:(nonnull void (^)(BOOL didTimeout))callback;
 
 /**
- * Creates one running FlutterEngine from another, sharing components between them.
+ * Creates one running FlutterEngineSDK from another, sharing components between them.
  *
  * This results in a faster creation time and a smaller memory footprint engine.
- * This should only be called on a FlutterEngine that is running.
+ * This should only be called on a FlutterEngineSDK that is running.
  */
-- (nonnull FlutterEngine*)spawnWithEntrypoint:(nullable NSString*)entrypoint
+- (nonnull FlutterEngineSDK*)spawnWithEntrypoint:(nullable NSString*)entrypoint
                                    libraryURI:(nullable NSString*)libraryURI
                                  initialRoute:(nullable NSString*)initialRoute;
 

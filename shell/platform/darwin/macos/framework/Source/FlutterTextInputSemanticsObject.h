@@ -47,7 +47,7 @@ class FlutterTextPlatformNode : public ui::AXPlatformNodeBase {
   /// @brief Ensures the FlutterTextField is attached to the FlutterView. This
   ///        method returns true if the text field is succesfully attached. If
   ///        this method returns false, that means the FlutterTextField could not
-  ///        be attached to the FlutterView. This can happen when the FlutterEngine
+  ///        be attached to the FlutterView. This can happen when the FlutterEngineSDK
   ///        does not have a FlutterViewController or the FlutterView is not loaded
   ///        yet.
   bool EnsureAttachedToView();

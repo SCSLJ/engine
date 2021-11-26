@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPluginAppLifeCycleDelegate.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPluginAppLifeCycleDelegateSDK.h"
 
 #include "flutter/fml/logging.h"
 #include "flutter/fml/paths.h"
 #include "flutter/lib/ui/plugins/callback_cache.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterCallbackCache_Internal.h"
 
 static const char* kCallbackCacheSubDir = "Library/Caches/";
@@ -16,7 +16,7 @@ static const SEL selectorsHandledByPlugins[] = {
     @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:),
     @selector(application:performFetchWithCompletionHandler:)};
 
-@interface FlutterPluginAppLifeCycleDelegate ()
+@interface FlutterPluginAppLifeCycleDelegateSDK ()
 - (void)handleDidEnterBackground:(NSNotification*)notification;
 - (void)handleWillEnterForeground:(NSNotification*)notification;
 - (void)handleWillResignActive:(NSNotification*)notification;
@@ -24,7 +24,7 @@ static const SEL selectorsHandledByPlugins[] = {
 - (void)handleWillTerminate:(NSNotification*)notification;
 @end
 
-@implementation FlutterPluginAppLifeCycleDelegate {
+@implementation FlutterPluginAppLifeCycleDelegateSDK {
   NSMutableArray* _notificationUnsubscribers;
   UIBackgroundTaskIdentifier _debugBackgroundTask;
 

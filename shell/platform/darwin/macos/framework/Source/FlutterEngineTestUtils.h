@@ -13,7 +13,7 @@ class FlutterEngineTest : public ::testing::Test {
  public:
   FlutterEngineTest();
 
-  FlutterEngine* GetFlutterEngine() { return engine_; };
+  FlutterEngineSDK* GetFlutterEngineSDK() { return engine_; };
 
   void SetUp() override;
   void TearDown() override;
@@ -26,7 +26,7 @@ class FlutterEngineTest : public ::testing::Test {
   inline static std::shared_ptr<TestDartNativeResolver> native_resolver_;
 
   FlutterDartProject* project_;
-  FlutterEngine* engine_;
+  FlutterEngineSDK* engine_;
 
   FML_DISALLOW_COPY_AND_ASSIGN(FlutterEngineTest);
 };

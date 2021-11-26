@@ -16,7 +16,7 @@ namespace flutter {
 // FlutterGLCompositor creates and manages the backing stores used for
 // rendering Flutter content and presents Flutter content and Platform views.
 // Platform views are not yet supported.
-// FlutterGLCompositor is created and destroyed by FlutterEngine.
+// FlutterGLCompositor is created and destroyed by FlutterEngineSDK.
 class FlutterGLCompositor : public FlutterCompositor {
  public:
   FlutterGLCompositor(FlutterViewController* view_controller,

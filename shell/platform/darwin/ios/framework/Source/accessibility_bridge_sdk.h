@@ -29,7 +29,7 @@ namespace flutter {
 class PlatformViewIOS;
 
 /**
- * An accessibility instance is bound to one `FlutterViewController` and
+ * An accessibility instance is bound to one `FlutterViewControllerSDK` and
  * `FlutterView` instance.
  *
  * It helps populate the UIView's accessibilityElements property from Flutter's
@@ -41,15 +41,15 @@ class AccessibilityBridge final : public AccessibilityBridgeIos {
   class IosDelegate {
    public:
     virtual ~IosDelegate() = default;
-    /// Returns true when the FlutterViewController associated with the `view`
+    /// Returns true when the FlutterViewControllerSDK associated with the `view`
     /// is presenting a modal view controller.
     virtual bool IsFlutterViewControllerPresentingModalViewController(
-        FlutterViewController* view_controller) = 0;
+        FlutterViewControllerSDK* view_controller) = 0;
     virtual void PostAccessibilityNotification(UIAccessibilityNotifications notification,
                                                id argument) = 0;
   };
 
-  AccessibilityBridge(FlutterViewController* view_controller,
+  AccessibilityBridge(FlutterViewControllerSDK* view_controller,
                       PlatformViewIOS* platform_view,
                       std::shared_ptr<FlutterPlatformViewsController> platform_views_controller,
                       std::unique_ptr<IosDelegate> ios_delegate = nullptr);
@@ -90,7 +90,7 @@ class AccessibilityBridge final : public AccessibilityBridgeIos {
                                         NSMutableArray<NSNumber*>* doomed_uids);
   void HandleEvent(NSDictionary<NSString*, id>* annotatedEvent);
 
-  FlutterViewController* view_controller_;
+  FlutterViewControllerSDK* view_controller_;
   PlatformViewIOS* platform_view_;
   const std::shared_ptr<FlutterPlatformViewsController> platform_views_controller_;
   // If the this id is kSemanticObjectIdInvalid, it means either nothing has

@@ -20,7 +20,7 @@
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterEngine_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterKeyPrimaryResponder.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterKeyboardManager.h"
-#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPlugin.h"
+#import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformPluginSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterPlatformViews_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterTextInputDelegate.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterTextInputPlugin.h"
@@ -64,7 +64,7 @@ typedef struct MouseState {
 // This is left a FlutterBinaryMessenger privately for now to give people a chance to notice the
 // change. Unfortunately unless you have Werror turned on, incompatible pointers as arguments are
 // just a warning.
-@interface FlutterViewController () <FlutterBinaryMessenger, UIScrollViewDelegate>
+@interface FlutterViewControllerSDK () <FlutterBinaryMessenger, UIScrollViewDelegate>
 @property(nonatomic, readwrite, getter=isDisplayingFlutterUI) BOOL displayingFlutterUI;
 @property(nonatomic, assign) BOOL isHomeIndicatorHidden;
 @property(nonatomic, assign) BOOL isPresentingViewControllerAnimating;
@@ -96,9 +96,9 @@ typedef enum UIAccessibilityContrast : NSInteger {
 @end
 #endif
 
-@implementation FlutterViewController {
-  std::unique_ptr<fml::WeakPtrFactory<FlutterViewController>> _weakFactory;
-  fml::scoped_nsobject<FlutterEngine> _engine;
+@implementation FlutterViewControllerSDK {
+  std::unique_ptr<fml::WeakPtrFactory<FlutterViewControllerSDK>> _weakFactory;
+  fml::scoped_nsobject<FlutterEngineSDK> _engine;
 
   // We keep a separate reference to this and create it ahead of time because we want to be able to
   // set up a shell along with its platform view before the view has to appear.
@@ -127,7 +127,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 #pragma mark - Manage and override all designated initializers
 
-- (instancetype)initWithEngine:(FlutterEngine*)engine
+- (instancetype)initWithEngine:(FlutterEngineSDK*)engine
                        nibName:(nullable NSString*)nibName
                         bundle:(nullable NSBundle*)nibBundle {
   NSAssert(engine != nil, @"Engine is required");
@@ -135,17 +135,17 @@ typedef enum UIAccessibilityContrast : NSInteger {
   if (self) {
     _viewOpaque = YES;
     if (engine.viewController) {
-      FML_LOG(ERROR) << "The supplied FlutterEngine " << [[engine description] UTF8String]
+      FML_LOG(ERROR) << "The supplied FlutterEngineSDK " << [[engine description] UTF8String]
                      << " is already used with FlutterViewController instance "
                      << [[engine.viewController description] UTF8String]
-                     << ". One instance of the FlutterEngine can only be attached to one "
-                        "FlutterViewController at a time. Set FlutterEngine.viewController "
-                        "to nil before attaching it to another FlutterViewController.";
+                     << ". One instance of the FlutterEngineSDK can only be attached to one "
+                        "FlutterViewControllerSDK at a time. Set FlutterEngineSDK.viewController "
+                        "to nil before attaching it to another FlutterViewControllerSDK.";
     }
     _engine.reset([engine retain]);
     _engineNeedsLaunch = NO;
     _flutterView.reset([[FlutterView alloc] initWithDelegate:_engine opaque:self.isViewOpaque]);
-    _weakFactory = std::make_unique<fml::WeakPtrFactory<FlutterViewController>>(self);
+    _weakFactory = std::make_unique<fml::WeakPtrFactory<FlutterViewControllerSDK>>(self);
     _ongoingTouches.reset([[NSMutableSet alloc] init]);
 
     [self performCommonViewControllerInitialization];
@@ -155,7 +155,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
   return self;
 }
 
-- (instancetype)initWithProject:(FlutterDartProject*)project
+- (instancetype)initWithProject:(FlutterDartProjectSDK*)project
                         nibName:(NSString*)nibName
                          bundle:(NSBundle*)nibBundle {
   self = [super initWithNibName:nibName bundle:nibBundle];
@@ -166,7 +166,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
   return self;
 }
 
-- (instancetype)initWithProject:(FlutterDartProject*)project
+- (instancetype)initWithProject:(FlutterDartProjectSDK*)project
                    initialRoute:(NSString*)initialRoute
                         nibName:(NSString*)nibName
                          bundle:(NSBundle*)nibBundle {
@@ -198,26 +198,27 @@ typedef enum UIAccessibilityContrast : NSInteger {
   return [self initWithProject:nil nibName:nil bundle:nil];
 }
 
-- (void)sharedSetupWithProject:(nullable FlutterDartProject*)project
+- (void)sharedSetupWithProject:(nullable FlutterDartProjectSDK*)project
                   initialRoute:(nullable NSString*)initialRoute {
   // Need the project to get settings for the view. Initializing it here means
   // the Engine class won't initialize it later.
+  NSLog(@"调用sharedSetupWithProject");
   if (!project) {
-    project = [[[FlutterDartProject alloc] init] autorelease];
+    project = [[[FlutterDartProjectSDK alloc] init] autorelease];
   }
   FlutterView.forceSoftwareRendering = project.settings.enable_software_rendering;
-  auto engine = fml::scoped_nsobject<FlutterEngine>{[[FlutterEngine alloc]
+  auto engine = fml::scoped_nsobject<FlutterEngineSDK>{[[FlutterEngineSDK alloc]
                 initWithName:@"io.flutter"
                      project:project
       allowHeadlessExecution:self.engineAllowHeadlessExecution
           restorationEnabled:[self restorationIdentifier] != nil]};
-
+  NSLog(@"将engine 初始化 ");
   if (!engine) {
     return;
   }
 
   _viewOpaque = YES;
-  _weakFactory = std::make_unique<fml::WeakPtrFactory<FlutterViewController>>(self);
+  _weakFactory = std::make_unique<fml::WeakPtrFactory<FlutterViewControllerSDK>>(self);
   _engine = std::move(engine);
   _flutterView.reset([[FlutterView alloc] initWithDelegate:_engine opaque:self.isViewOpaque]);
   [_engine.get() createShell:nil libraryURI:nil initialRoute:initialRoute];
@@ -254,11 +255,11 @@ typedef enum UIAccessibilityContrast : NSInteger {
   [self setupNotificationCenterObservers];
 }
 
-- (FlutterEngine*)engine {
+- (FlutterEngineSDK*)engine {
   return _engine.get();
 }
 
-- (fml::WeakPtr<FlutterViewController>)getWeakPtr {
+- (fml::WeakPtr<FlutterViewControllerSDK>)getWeakPtr {
   return _weakFactory->GetWeakPtr();
 }
 
@@ -422,7 +423,7 @@ static UIView* GetViewOrPlaceholder(UIView* existing_view) {
   _scrollView.reset(scrollView);
 }
 
-static void sendFakeTouchEvent(FlutterEngine* engine,
+static void sendFakeTouchEvent(FlutterEngineSDK* engine,
                                CGPoint location,
                                flutter::PointerData::Change change) {
   const CGFloat scale = [UIScreen mainScreen].scale;
@@ -526,8 +527,8 @@ static void sendFakeTouchEvent(FlutterEngine* engine,
     FML_DCHECK(RasterTaskRunner->RunsTasksOnCurrentThread());
     // Get callback on raster thread and jump back to platform thread.
     platformTaskRunner->PostTask([weakSelf]() {
-      fml::scoped_nsobject<FlutterViewController> flutterViewController(
-          [(FlutterViewController*)weakSelf.get() retain]);
+      fml::scoped_nsobject<FlutterViewControllerSDK> flutterViewController(
+          [(FlutterViewControllerSDK*)weakSelf.get() retain]);
       if (flutterViewController) {
         if (flutterViewController.get()->_splashScreenView) {
           [flutterViewController removeSplashScreenView:^{
@@ -644,6 +645,8 @@ static void sendFakeTouchEvent(FlutterEngine* engine,
 - (void)viewDidLoad {
   TRACE_EVENT0("flutter", "viewDidLoad");
 
+  NSLog(@"加载framework 的主页View");
+
   if (_engine && _engineNeedsLaunch) {
     // Register internal plugins before starting the engine.
     [self addInternalPlugins];
@@ -673,7 +676,7 @@ static void sendFakeTouchEvent(FlutterEngine* engine,
 
 - (void)addInternalPlugins {
   self.keyboardManager = [[[FlutterKeyboardManager alloc] init] autorelease];
-  fml::WeakPtr<FlutterViewController> weakSelf = [self getWeakPtr];
+  fml::WeakPtr<FlutterViewControllerSDK> weakSelf = [self getWeakPtr];
   FlutterSendKeyEvent sendEvent =
       ^(const FlutterKeyEvent& event, FlutterKeyEventCallback callback, void* userData) {
         [weakSelf.get()->_engine.get() sendKeyEvent:event callback:callback userData:userData];
@@ -1631,18 +1634,18 @@ static flutter::PointerData::DeviceKind DeviceKindFromTouchType(UITouch* touch) 
 }
 
 - (NSString*)lookupKeyForAsset:(NSString*)asset {
-  return [FlutterDartProject lookupKeyForAsset:asset];
+  return [FlutterDartProjectSDK lookupKeyForAsset:asset];
 }
 
 - (NSString*)lookupKeyForAsset:(NSString*)asset fromPackage:(NSString*)package {
-  return [FlutterDartProject lookupKeyForAsset:asset fromPackage:package];
+  return [FlutterDartProjectSDK lookupKeyForAsset:asset fromPackage:package];
 }
 
-- (id<FlutterPluginRegistry>)pluginRegistry {
+- (id<FlutterPluginRegistrySDK>)pluginRegistry {
   return _engine;
 }
 
-#pragma mark - FlutterPluginRegistry
+#pragma mark - FlutterPluginRegistrySDK
 
 - (NSObject<FlutterPluginRegistrar>*)registrarForPlugin:(NSString*)pluginKey {
   return [_engine.get() registrarForPlugin:pluginKey];

@@ -21,7 +21,7 @@
 namespace flutter {  // namespace
 
 FlutterPlatformNodeDelegateMac::FlutterPlatformNodeDelegateMac(
-    __weak FlutterEngine* engine,
+    __weak FlutterEngineSDK* engine,
     __weak FlutterViewController* view_controller)
     : engine_(engine), view_controller_(view_controller) {}
 

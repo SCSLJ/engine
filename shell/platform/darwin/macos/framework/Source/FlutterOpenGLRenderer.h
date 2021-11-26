@@ -8,7 +8,7 @@
 
 /**
  * Provides the renderer config needed to initialize the embedder engine and also handles external
- * texture management. This is initialized during FlutterEngine creation and then attached to the
+ * texture management. This is initialized during FlutterEngineSDK creation and then attached to the
  * FlutterView once the FlutterViewController is initializer.
  */
 @interface FlutterOpenGLRenderer : FlutterTextureRegistrar <FlutterRenderer>

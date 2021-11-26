@@ -870,7 +870,7 @@ FlutterEngineResult FlutterEngineRun(size_t version,
                                      const FlutterRendererConfig* config,
                                      const FlutterProjectArgs* args,
                                      void* user_data,
-                                     FLUTTER_API_SYMBOL(FlutterEngine) *
+                                     FLUTTER_API_SYMBOL(FlutterEngineSDK) *
                                          engine_out) {
   auto result =
       FlutterEngineInitialize(version, config, args, user_data, engine_out);
@@ -886,7 +886,7 @@ FlutterEngineResult FlutterEngineInitialize(size_t version,
                                             const FlutterRendererConfig* config,
                                             const FlutterProjectArgs* args,
                                             void* user_data,
-                                            FLUTTER_API_SYMBOL(FlutterEngine) *
+                                            FLUTTER_API_SYMBOL(FlutterEngineSDK) *
                                                 engine_out) {
   // Step 0: Figure out arguments for shell creation.
   if (version != FLUTTER_ENGINE_VERSION) {
@@ -1318,13 +1318,13 @@ FlutterEngineResult FlutterEngineInitialize(size_t version,
   );
 
   // Release the ownership of the embedder engine to the caller.
-  *engine_out = reinterpret_cast<FLUTTER_API_SYMBOL(FlutterEngine)>(
+  *engine_out = reinterpret_cast<FLUTTER_API_SYMBOL(FlutterEngineSDK)>(
       embedder_engine.release());
   return kSuccess;
 }
 
 FlutterEngineResult FlutterEngineRunInitialized(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine) {
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine) {
   if (!engine) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Engine handle was invalid.");
   }
@@ -1362,7 +1362,7 @@ FlutterEngineResult FlutterEngineRunInitialized(
 }
 
 FLUTTER_EXPORT
-FlutterEngineResult FlutterEngineDeinitialize(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineDeinitialize(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                                   engine) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Engine handle was invalid.");
@@ -1374,7 +1374,7 @@ FlutterEngineResult FlutterEngineDeinitialize(FLUTTER_API_SYMBOL(FlutterEngine)
   return kSuccess;
 }
 
-FlutterEngineResult FlutterEngineShutdown(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineShutdown(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                               engine) {
   auto result = FlutterEngineDeinitialize(engine);
   if (result != kSuccess) {
@@ -1386,7 +1386,7 @@ FlutterEngineResult FlutterEngineShutdown(FLUTTER_API_SYMBOL(FlutterEngine)
 }
 
 FlutterEngineResult FlutterEngineSendWindowMetricsEvent(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterWindowMetricsEvent* flutter_metrics) {
   if (engine == nullptr || flutter_metrics == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Engine handle was invalid.");
@@ -1508,7 +1508,7 @@ inline int64_t PointerDataButtonsForLegacyEvent(
 }
 
 FlutterEngineResult FlutterEngineSendPointerEvent(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPointerEvent* pointers,
     size_t events_count) {
   if (engine == nullptr) {
@@ -1593,7 +1593,7 @@ static inline flutter::KeyEventType MapKeyEventType(
   return flutter::KeyEventType::kUp;
 }
 
-FlutterEngineResult FlutterEngineSendKeyEvent(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineSendKeyEvent(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                                   engine,
                                               const FlutterKeyEvent* event,
                                               FlutterKeyEventCallback callback,
@@ -1634,7 +1634,7 @@ FlutterEngineResult FlutterEngineSendKeyEvent(FLUTTER_API_SYMBOL(FlutterEngine)
 }
 
 FlutterEngineResult FlutterEngineSendPlatformMessage(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPlatformMessage* flutter_message) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Invalid engine handle.");
@@ -1685,7 +1685,7 @@ FlutterEngineResult FlutterEngineSendPlatformMessage(
 }
 
 FlutterEngineResult FlutterPlatformMessageCreateResponseHandle(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterDataCallback data_callback,
     void* user_data,
     FlutterPlatformMessageResponseHandle** response_out) {
@@ -1720,7 +1720,7 @@ FlutterEngineResult FlutterPlatformMessageCreateResponseHandle(
 }
 
 FlutterEngineResult FlutterPlatformMessageReleaseResponseHandle(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterPlatformMessageResponseHandle* response) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Invalid engine handle.");
@@ -1734,7 +1734,7 @@ FlutterEngineResult FlutterPlatformMessageReleaseResponseHandle(
 }
 
 FlutterEngineResult FlutterEngineSendPlatformMessageResponse(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPlatformMessageResponseHandle* handle,
     const uint8_t* data,
     size_t data_length) {
@@ -1766,7 +1766,7 @@ FlutterEngineResult __FlutterEngineFlushPendingTasksNow() {
 }
 
 FlutterEngineResult FlutterEngineRegisterExternalTexture(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Engine handle was invalid.");
@@ -1785,7 +1785,7 @@ FlutterEngineResult FlutterEngineRegisterExternalTexture(
 }
 
 FlutterEngineResult FlutterEngineUnregisterExternalTexture(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Engine handle was invalid.");
@@ -1806,7 +1806,7 @@ FlutterEngineResult FlutterEngineUnregisterExternalTexture(
 }
 
 FlutterEngineResult FlutterEngineMarkExternalTextureFrameAvailable(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Invalid engine handle.");
@@ -1824,7 +1824,7 @@ FlutterEngineResult FlutterEngineMarkExternalTextureFrameAvailable(
 }
 
 FlutterEngineResult FlutterEngineUpdateSemanticsEnabled(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     bool enabled) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Invalid engine handle.");
@@ -1838,7 +1838,7 @@ FlutterEngineResult FlutterEngineUpdateSemanticsEnabled(
 }
 
 FlutterEngineResult FlutterEngineUpdateAccessibilityFeatures(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterAccessibilityFeature flags) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Invalid engine handle.");
@@ -1852,7 +1852,7 @@ FlutterEngineResult FlutterEngineUpdateAccessibilityFeatures(
 }
 
 FlutterEngineResult FlutterEngineDispatchSemanticsAction(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     uint64_t id,
     FlutterSemanticsAction action,
     const uint8_t* data,
@@ -1871,7 +1871,7 @@ FlutterEngineResult FlutterEngineDispatchSemanticsAction(
   return kSuccess;
 }
 
-FlutterEngineResult FlutterEngineOnVsync(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineOnVsync(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                              engine,
                                          intptr_t baton,
                                          uint64_t frame_start_time_nanos,
@@ -1899,7 +1899,7 @@ FlutterEngineResult FlutterEngineOnVsync(FLUTTER_API_SYMBOL(FlutterEngine)
 }
 
 FlutterEngineResult FlutterEngineReloadSystemFonts(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine) {
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine) {
   if (engine == nullptr) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Invalid engine handle.");
   }
@@ -1928,7 +1928,7 @@ void FlutterEngineTraceEventInstant(const char* name) {
 }
 
 FlutterEngineResult FlutterEnginePostRenderThreadTask(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     VoidCallback callback,
     void* baton) {
   if (engine == nullptr) {
@@ -1953,7 +1953,7 @@ uint64_t FlutterEngineGetCurrentTime() {
   return fml::TimePoint::Now().ToEpochDelta().ToNanoseconds();
 }
 
-FlutterEngineResult FlutterEngineRunTask(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineRunTask(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                              engine,
                                          const FlutterTask* task) {
   if (engine == nullptr) {
@@ -1966,7 +1966,7 @@ FlutterEngineResult FlutterEngineRunTask(FLUTTER_API_SYMBOL(FlutterEngine)
                                   "Could not run the specified task.");
 }
 
-static bool DispatchJSONPlatformMessage(FLUTTER_API_SYMBOL(FlutterEngine)
+static bool DispatchJSONPlatformMessage(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                             engine,
                                         rapidjson::Document document,
                                         const std::string& channel_name) {
@@ -1998,7 +1998,7 @@ static bool DispatchJSONPlatformMessage(FLUTTER_API_SYMBOL(FlutterEngine)
       ->SendPlatformMessage(std::move(platform_message));
 }
 
-FlutterEngineResult FlutterEngineUpdateLocales(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineUpdateLocales(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                                    engine,
                                                const FlutterLocale** locales,
                                                size_t locales_count) {
@@ -2063,7 +2063,7 @@ bool FlutterEngineRunsAOTCompiledDartCode(void) {
 }
 
 FlutterEngineResult FlutterEnginePostDartObject(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterEngineDartPort port,
     const FlutterEngineDartObject* object) {
   if (engine == nullptr) {
@@ -2187,7 +2187,7 @@ FlutterEngineResult FlutterEnginePostDartObject(
 }
 
 FlutterEngineResult FlutterEngineNotifyLowMemoryWarning(
-    FLUTTER_API_SYMBOL(FlutterEngine) raw_engine) {
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) raw_engine) {
   auto engine = reinterpret_cast<flutter::EmbedderEngine*>(raw_engine);
   if (engine == nullptr || !engine->IsValid()) {
     return LOG_EMBEDDER_ERROR(kInvalidArguments, "Engine was invalid.");
@@ -2210,7 +2210,7 @@ FlutterEngineResult FlutterEngineNotifyLowMemoryWarning(
 }
 
 FlutterEngineResult FlutterEnginePostCallbackOnAllNativeThreads(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterNativeThreadCallback callback,
     void* user_data) {
   if (engine == nullptr) {
@@ -2249,7 +2249,7 @@ static bool ValidDisplayConfiguration(const FlutterEngineDisplay* displays,
 }  // namespace
 
 FlutterEngineResult FlutterEngineNotifyDisplayUpdate(
-    FLUTTER_API_SYMBOL(FlutterEngine) raw_engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) raw_engine,
     const FlutterEngineDisplaysUpdateType update_type,
     const FlutterEngineDisplay* embedder_displays,
     size_t display_count) {

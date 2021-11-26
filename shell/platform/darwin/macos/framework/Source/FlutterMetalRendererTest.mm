@@ -17,17 +17,17 @@ namespace flutter::testing {
 
 namespace {
 // Returns an engine configured for the test fixture resource configuration.
-FlutterEngine* CreateTestEngine() {
+FlutterEngineSDK* CreateTestEngine() {
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
-  return [[FlutterEngine alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
+  return [[FlutterEngineSDK alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
 }
 }  // namespace
 
 TEST(FlutterMetalRenderer, PresentDelegatesToFlutterView) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   FlutterMetalRenderer* renderer = [[FlutterMetalRenderer alloc] initWithFlutterEngine:engine];
   id mockFlutterView = OCMClassMock([FlutterView class]);
   [[mockFlutterView expect] present];
@@ -36,7 +36,7 @@ TEST(FlutterMetalRenderer, PresentDelegatesToFlutterView) {
 }
 
 TEST(FlutterMetalRenderer, TextureReturnedByFlutterView) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   FlutterMetalRenderer* renderer = [[FlutterMetalRenderer alloc] initWithFlutterEngine:engine];
   id mockFlutterView = OCMClassMock([FlutterView class]);
   FlutterFrameInfo frameInfo;

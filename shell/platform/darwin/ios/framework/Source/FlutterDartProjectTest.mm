@@ -11,10 +11,10 @@
 
 FLUTTER_ASSERT_ARC
 
-@interface FlutterDartProjectTest : XCTestCase
+@interface FlutterDartProjectSDKTest : XCTestCase
 @end
 
-@implementation FlutterDartProjectTest
+@implementation FlutterDartProjectSDKTest
 
 - (void)setUp {
 }
@@ -23,7 +23,7 @@ FLUTTER_ASSERT_ARC
 }
 
 - (void)testOldGenHeapSizeSetting {
-  FlutterDartProject* project = [[FlutterDartProject alloc] init];
+  FlutterDartProjectSDK* project = [[FlutterDartProjectSDK alloc] init];
   int64_t old_gen_heap_size =
       std::round([NSProcessInfo processInfo].physicalMemory * .48 / flutter::kMegaByteSizeInBytes);
   XCTAssertEqual(project.settings.old_gen_heap_size, old_gen_heap_size);
@@ -33,20 +33,20 @@ FLUTTER_ASSERT_ARC
   NSBundle* mainBundle = [NSBundle mainBundle];
   NSDictionary* appTransportSecurity =
       [mainBundle objectForInfoDictionaryKey:@"NSAppTransportSecurity"];
-  XCTAssertTrue([FlutterDartProject allowsArbitraryLoads:appTransportSecurity]);
+  XCTAssertTrue([FlutterDartProjectSDK allowsArbitraryLoads:appTransportSecurity]);
   XCTAssertEqualObjects(
       @"[[\"invalid-site.com\",true,false],[\"sub.invalid-site.com\",false,false]]",
-      [FlutterDartProject domainNetworkPolicy:appTransportSecurity]);
+      [FlutterDartProjectSDK domainNetworkPolicy:appTransportSecurity]);
 }
 
 - (void)testEmptySettingsAreCorrect {
-  XCTAssertFalse([FlutterDartProject allowsArbitraryLoads:[[NSDictionary alloc] init]]);
-  XCTAssertEqualObjects(@"", [FlutterDartProject domainNetworkPolicy:[[NSDictionary alloc] init]]);
+  XCTAssertFalse([FlutterDartProjectSDK allowsArbitraryLoads:[[NSDictionary alloc] init]]);
+  XCTAssertEqualObjects(@"", [FlutterDartProjectSDK domainNetworkPolicy:[[NSDictionary alloc] init]]);
 }
 
 - (void)testAllowsArbitraryLoads {
-  XCTAssertFalse([FlutterDartProject allowsArbitraryLoads:@{@"NSAllowsArbitraryLoads" : @false}]);
-  XCTAssertTrue([FlutterDartProject allowsArbitraryLoads:@{@"NSAllowsArbitraryLoads" : @true}]);
+  XCTAssertFalse([FlutterDartProjectSDK allowsArbitraryLoads:@{@"NSAllowsArbitraryLoads" : @false}]);
+  XCTAssertTrue([FlutterDartProjectSDK allowsArbitraryLoads:@{@"NSAllowsArbitraryLoads" : @true}]);
 }
 
 - (void)testProperlyFormedExceptionDomains {
@@ -73,7 +73,7 @@ FLUTTER_ASSERT_ARC
   NSDictionary* appTransportSecurity = @{@"NSExceptionDomains" : exceptionDomains};
   XCTAssertEqualObjects(@"[[\"domain.name\",false,true],[\"sub.domain.name\",true,false],"
                         @"[\"sub.two.domain.name\",false,true]]",
-                        [FlutterDartProject domainNetworkPolicy:appTransportSecurity]);
+                        [FlutterDartProjectSDK domainNetworkPolicy:appTransportSecurity]);
 }
 
 - (void)testExceptionDomainsWithMissingInfo {
@@ -90,7 +90,7 @@ FLUTTER_ASSERT_ARC
   NSDictionary* appTransportSecurity = @{@"NSExceptionDomains" : exceptionDomains};
   XCTAssertEqualObjects(@"[[\"domain.name\",false,false],[\"sub.domain.name\",true,false],"
                         @"[\"sub.two.domain.name\",false,false]]",
-                        [FlutterDartProject domainNetworkPolicy:appTransportSecurity]);
+                        [FlutterDartProjectSDK domainNetworkPolicy:appTransportSecurity]);
 }
 
 @end

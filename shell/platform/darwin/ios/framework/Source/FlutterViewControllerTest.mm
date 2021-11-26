@@ -9,7 +9,7 @@
 #import "flutter/lib/ui/window/viewport_metrics.h"
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterBinaryMessenger.h"
 #import "flutter/shell/platform/darwin/common/framework/Headers/FlutterMacros.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewController.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterViewControllerSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterFakeKeyEvents.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterTextInputPlugin.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterViewController_Internal.h"
@@ -17,7 +17,7 @@
 
 FLUTTER_ASSERT_ARC
 
-@interface FlutterEngine ()
+@interface FlutterEngineSDK ()
 - (FlutterTextInputPlugin*)textInputPlugin;
 - (void)sendKeyEvent:(const FlutterKeyEvent&)event
             callback:(nullable FlutterKeyEventCallback)callback
@@ -30,10 +30,10 @@ class PointerDataPacket {};
 
 /// Sometimes we have to use a custom mock to avoid retain cycles in OCMock.
 /// Used for testing low memory notification.
-@interface FlutterEnginePartialMock : FlutterEngine
+@interface FlutterEngineSDKPartialMock : FlutterEngineSDK
 @property(nonatomic, strong) FlutterBasicMessageChannel* lifecycleChannel;
 @property(nonatomic, strong) FlutterBasicMessageChannel* keyEventChannel;
-@property(nonatomic, weak) FlutterViewController* viewController;
+@property(nonatomic, weak) FlutterViewControllerSDK* viewController;
 @property(nonatomic, strong) FlutterTextInputPlugin* textInputPlugin;
 @property(nonatomic, assign) BOOL didCallNotifyLowMemory;
 - (FlutterTextInputPlugin*)textInputPlugin;
@@ -67,7 +67,7 @@ class PointerDataPacket {};
 }
 @end
 
-@interface FlutterEngine ()
+@interface FlutterEngineSDK ()
 - (BOOL)createShell:(NSString*)entrypoint
          libraryURI:(NSString*)libraryURI
        initialRoute:(NSString*)initialRoute;
@@ -76,28 +76,28 @@ class PointerDataPacket {};
 - (void)attachView;
 @end
 
-@interface FlutterEngine (TestLowMemory)
+@interface FlutterEngineSDK (TestLowMemory)
 - (void)notifyLowMemory;
 @end
 
 extern NSNotificationName const FlutterViewControllerWillDealloc;
 
-/// A simple mock class for FlutterEngine.
+/// A simple mock class for FlutterEngineSDK.
 ///
-/// OCMClassMock can't be used for FlutterEngine sometimes because OCMock retains arguments to
-/// invocations and since the init for FlutterViewController calls a method on the
-/// FlutterEngine it creates a retain cycle that stops us from testing behaviors related to
-/// deleting FlutterViewControllers.
+/// OCMClassMock can't be used for FlutterEngineSDK sometimes because OCMock retains arguments to
+/// invocations and since the init for FlutterViewControllerSDK calls a method on the
+/// FlutterEngineSDK it creates a retain cycle that stops us from testing behaviors related to
+/// deleting FlutterViewControllerSDKs.
 ///
 /// Used for testing deallocation.
 @interface MockEngine : NSObject
 @end
 
 @implementation MockEngine
-- (FlutterViewController*)viewController {
+- (FlutterViewControllerSDK*)viewController {
   return nil;
 }
-- (void)setViewController:(FlutterViewController*)viewController {
+- (void)setViewController:(FlutterViewControllerSDK*)viewController {
   // noop
 }
 @end
@@ -116,7 +116,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
 @end
 #endif
 
-@interface FlutterViewController (Tests)
+@interface FlutterViewControllerSDK (Tests)
 - (void)surfaceUpdated:(BOOL)appeared;
 - (void)performOrientationUpdate:(UIInterfaceOrientationMask)new_preferences;
 - (void)handlePressEvent:(FlutterUIPressProxy*)press
@@ -140,7 +140,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
 @implementation FlutterViewControllerTest
 
 - (void)setUp {
-  self.mockEngine = OCMClassMock([FlutterEngine class]);
+  self.mockEngine = OCMClassMock([FlutterEngineSDK class]);
   self.mockTextInputPlugin = OCMClassMock([FlutterTextInputPlugin class]);
   OCMStub([self.mockEngine textInputPlugin]).andReturn(self.mockTextInputPlugin);
   self.messageSent = nil;
@@ -148,7 +148,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)tearDown {
   // We stop mocking here to avoid retain cycles that stop
-  // FlutterViewControllers from deallocing.
+  // FlutterViewControllerSDKs from deallocing.
   [self.mockEngine stopMocking];
   self.mockEngine = nil;
   self.mockTextInputPlugin = nil;
@@ -156,9 +156,9 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testkeyboardWillChangeFrameWillStartKeyboardAnimation {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
 
@@ -179,9 +179,9 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testEnsureViewportMetricsWillInvokeAndDisplayLinkWillInvalidateInViewDidDisappear {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
   id viewControllerMock = OCMPartialMock(viewController);
@@ -192,12 +192,12 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)testViewDidDisappearDoesntPauseEngineWhenNotTheViewController {
   id lifecycleChannel = OCMClassMock([FlutterBasicMessageChannel class]);
-  FlutterEnginePartialMock* mockEngine = [[FlutterEnginePartialMock alloc] init];
+  FlutterEngineSDKPartialMock* mockEngine = [[FlutterEngineSDKPartialMock alloc] init];
   mockEngine.lifecycleChannel = lifecycleChannel;
-  FlutterViewController* viewControllerA =
-      [[FlutterViewController alloc] initWithEngine:self.mockEngine nibName:nil bundle:nil];
-  FlutterViewController* viewControllerB =
-      [[FlutterViewController alloc] initWithEngine:self.mockEngine nibName:nil bundle:nil];
+  FlutterViewControllerSDK* viewControllerA =
+      [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine nibName:nil bundle:nil];
+  FlutterViewControllerSDK* viewControllerB =
+      [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine nibName:nil bundle:nil];
   id viewControllerMock = OCMPartialMock(viewControllerA);
   OCMStub([viewControllerMock surfaceUpdated:NO]);
   mockEngine.viewController = viewControllerB;
@@ -208,11 +208,11 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)testViewDidDisappearDoesPauseEngineWhenIsTheViewController {
   id lifecycleChannel = OCMClassMock([FlutterBasicMessageChannel class]);
-  FlutterEnginePartialMock* mockEngine = [[FlutterEnginePartialMock alloc] init];
+  FlutterEngineSDKPartialMock* mockEngine = [[FlutterEngineSDKPartialMock alloc] init];
   mockEngine.lifecycleChannel = lifecycleChannel;
-  __weak FlutterViewController* weakViewController;
+  __weak FlutterViewControllerSDK* weakViewController;
   @autoreleasepool {
-    FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+    FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                   nibName:nil
                                                                                    bundle:nil];
     weakViewController = viewController;
@@ -227,9 +227,9 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)
     testEngineConfigSyncMethodWillExecuteWhenViewControllerInEngineIsCurrentViewControllerInViewWillAppear {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
   [viewController viewWillAppear:YES];
@@ -238,13 +238,13 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)
     testEngineConfigSyncMethodWillNotExecuteWhenViewControllerInEngineIsNotCurrentViewControllerInViewWillAppear {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewControllerA = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerA = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = nil;
-  FlutterViewController* viewControllerB = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerB = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = nil;
@@ -255,9 +255,9 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)
     testEngineConfigSyncMethodWillExecuteWhenViewControllerInEngineIsCurrentViewControllerInViewDidAppear {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
   [viewController viewDidAppear:YES];
@@ -266,13 +266,13 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)
     testEngineConfigSyncMethodWillNotExecuteWhenViewControllerInEngineIsNotCurrentViewControllerInViewDidAppear {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewControllerA = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerA = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = nil;
-  FlutterViewController* viewControllerB = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerB = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = nil;
@@ -284,9 +284,9 @@ typedef enum UIAccessibilityContrast : NSInteger {
 - (void)
     testEngineConfigSyncMethodWillExecuteWhenViewControllerInEngineIsCurrentViewControllerInViewWillDisappear {
   id lifecycleChannel = OCMClassMock([FlutterBasicMessageChannel class]);
-  FlutterEnginePartialMock* mockEngine = [[FlutterEnginePartialMock alloc] init];
+  FlutterEngineSDKPartialMock* mockEngine = [[FlutterEngineSDKPartialMock alloc] init];
   mockEngine.lifecycleChannel = lifecycleChannel;
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
   mockEngine.viewController = viewController;
@@ -297,12 +297,12 @@ typedef enum UIAccessibilityContrast : NSInteger {
 - (void)
     testEngineConfigSyncMethodWillNotExecuteWhenViewControllerInEngineIsNotCurrentViewControllerInViewWillDisappear {
   id lifecycleChannel = OCMClassMock([FlutterBasicMessageChannel class]);
-  FlutterEnginePartialMock* mockEngine = [[FlutterEnginePartialMock alloc] init];
+  FlutterEngineSDKPartialMock* mockEngine = [[FlutterEngineSDKPartialMock alloc] init];
   mockEngine.lifecycleChannel = lifecycleChannel;
-  FlutterViewController* viewControllerA = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerA = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
-  FlutterViewController* viewControllerB = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerB = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = viewControllerB;
@@ -311,13 +311,13 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testUpdateViewportMetricsDoesntInvokeEngineWhenNotTheViewController {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewControllerA = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerA = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = nil;
-  FlutterViewController* viewControllerB = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerB = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = viewControllerB;
@@ -327,9 +327,9 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testUpdateViewportMetricsDoesInvokeEngineWhenIsTheViewController {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
   mockEngine.viewController = viewController;
@@ -339,13 +339,13 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testViewDidLoadDoesntInvokeEngineWhenNotTheViewController {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* viewControllerA = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerA = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = nil;
-  FlutterViewController* viewControllerB = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewControllerB = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                  nibName:nil
                                                                                   bundle:nil];
   mockEngine.viewController = viewControllerB;
@@ -355,10 +355,10 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testViewDidLoadDoesInvokeEngineWhenIsTheViewController {
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
   mockEngine.viewController = nil;
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
   mockEngine.viewController = viewController;
@@ -368,7 +368,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testBinaryMessenger {
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
   XCTAssertNotNil(vc);
@@ -385,7 +385,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
   id settingsChannel = OCMClassMock([FlutterBasicMessageChannel class]);
   OCMStub([self.mockEngine settingsChannel]).andReturn(settingsChannel);
 
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
 
@@ -404,10 +404,10 @@ typedef enum UIAccessibilityContrast : NSInteger {
 - (void)testItReportsPlatformBrightnessWhenViewWillAppear {
   // Setup test.
   id settingsChannel = OCMClassMock([FlutterBasicMessageChannel class]);
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
   OCMStub([mockEngine settingsChannel]).andReturn(settingsChannel);
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
 
@@ -434,13 +434,13 @@ typedef enum UIAccessibilityContrast : NSInteger {
   id settingsChannel = OCMClassMock([FlutterBasicMessageChannel class]);
   OCMStub([self.mockEngine settingsChannel]).andReturn(settingsChannel);
 
-  FlutterViewController* realVC = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* realVC = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                         nibName:nil
                                                                          bundle:nil];
   id mockTraitCollection =
       [self fakeTraitCollectionWithUserInterfaceStyle:UIUserInterfaceStyleDark];
 
-  // We partially mock the real FlutterViewController to act as the OS and report
+  // We partially mock the real FlutterViewControllerSDK to act as the OS and report
   // the UITraitCollection of our choice. Mocking the object under test is not
   // desirable, but given that the OS does not offer a DI approach to providing
   // our own UITraitCollection, this seems to be the least bad option.
@@ -482,7 +482,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
   id settingsChannel = OCMClassMock([FlutterBasicMessageChannel class]);
   OCMStub([self.mockEngine settingsChannel]).andReturn(settingsChannel);
 
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
 
@@ -504,13 +504,13 @@ typedef enum UIAccessibilityContrast : NSInteger {
   } else {
     return;
   }
-  FlutterEngine* mockEngine = OCMPartialMock([[FlutterEngine alloc] init]);
+  FlutterEngineSDK* mockEngine = OCMPartialMock([[FlutterEngineSDK alloc] init]);
   [mockEngine createShell:@"" libraryURI:@"" initialRoute:nil];
 
   // Setup test.
   id settingsChannel = OCMClassMock([FlutterBasicMessageChannel class]);
   OCMStub([mockEngine settingsChannel]).andReturn(settingsChannel);
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
 
@@ -537,12 +537,12 @@ typedef enum UIAccessibilityContrast : NSInteger {
   id settingsChannel = OCMClassMock([FlutterBasicMessageChannel class]);
   OCMStub([self.mockEngine settingsChannel]).andReturn(settingsChannel);
 
-  FlutterViewController* realVC = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* realVC = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                         nibName:nil
                                                                          bundle:nil];
   id mockTraitCollection = [self fakeTraitCollectionWithContrast:UIAccessibilityContrastHigh];
 
-  // We partially mock the real FlutterViewController to act as the OS and report
+  // We partially mock the real FlutterViewControllerSDK to act as the OS and report
   // the UITraitCollection of our choice. Mocking the object under test is not
   // desirable, but given that the OS does not offer a DI approach to providing
   // our own UITraitCollection, this seems to be the least bad option.
@@ -720,7 +720,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
     OCMExpect([deviceMock setValue:@(resultingOrientation) forKey:@"orientation"]);
   }
 
-  FlutterViewController* realVC = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* realVC = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                         nibName:nil
                                                                          bundle:nil];
   id mockApplication = OCMClassMock([UIApplication class]);
@@ -746,7 +746,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
       [[XCTestExpectation alloc] initWithDescription:@"notification called"];
   id engine = [[MockEngine alloc] init];
   @autoreleasepool {
-    FlutterViewController* realVC = [[FlutterViewController alloc] initWithEngine:engine
+    FlutterViewControllerSDK* realVC = [[FlutterViewControllerSDK alloc] initWithEngine:engine
                                                                           nibName:nil
                                                                            bundle:nil];
     [[NSNotificationCenter defaultCenter] addObserverForName:FlutterViewControllerWillDealloc
@@ -763,7 +763,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
 - (void)testReleasesKeyboardManagerOnDealloc {
   __weak FlutterKeyboardManager* weakKeyboardManager = nil;
   @autoreleasepool {
-    FlutterViewController* viewController = [[FlutterViewController alloc] init];
+    FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] init];
 
     [viewController addInternalPlugins];
     weakKeyboardManager = viewController.keyboardManager;
@@ -776,10 +776,10 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testDoesntLoadViewInInit {
-  FlutterDartProject* project = [[FlutterDartProject alloc] init];
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  FlutterDartProjectSDK* project = [[FlutterDartProjectSDK alloc] init];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   [engine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* realVC = [[FlutterViewController alloc] initWithEngine:engine
+  FlutterViewControllerSDK* realVC = [[FlutterViewControllerSDK alloc] initWithEngine:engine
                                                                         nibName:nil
                                                                          bundle:nil];
   XCTAssertFalse([realVC isViewLoaded], @"shouldn't have loaded since it hasn't been shown");
@@ -787,10 +787,10 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testHideOverlay {
-  FlutterDartProject* project = [[FlutterDartProject alloc] init];
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  FlutterDartProjectSDK* project = [[FlutterDartProjectSDK alloc] init];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   [engine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* realVC = [[FlutterViewController alloc] initWithEngine:engine
+  FlutterViewControllerSDK* realVC = [[FlutterViewControllerSDK alloc] initWithEngine:engine
                                                                         nibName:nil
                                                                          bundle:nil];
   XCTAssertFalse(realVC.prefersHomeIndicatorAutoHidden, @"");
@@ -801,10 +801,10 @@ typedef enum UIAccessibilityContrast : NSInteger {
 }
 
 - (void)testHideA11yElements {
-  FlutterDartProject* project = [[FlutterDartProject alloc] init];
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar" project:project];
+  FlutterDartProjectSDK* project = [[FlutterDartProjectSDK alloc] init];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar" project:project];
   [engine createShell:@"" libraryURI:@"" initialRoute:nil];
-  FlutterViewController* realVC = [[FlutterViewController alloc] initWithEngine:engine
+  FlutterViewControllerSDK* realVC = [[FlutterViewControllerSDK alloc] initWithEngine:engine
                                                                         nibName:nil
                                                                          bundle:nil];
   XCTAssertFalse(realVC.view.accessibilityElementsHidden);
@@ -821,7 +821,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
 
 - (void)testNotifyLowMemory {
   FlutterEnginePartialMock* mockEngine = [[FlutterEnginePartialMock alloc] init];
-  FlutterViewController* viewController = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* viewController = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                                 nibName:nil
                                                                                  bundle:nil];
   id viewControllerMock = OCMPartialMock(viewController);
@@ -857,7 +857,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
   OCMStub([self.mockTextInputPlugin handlePress:[OCMArg any]]).andReturn(YES);
   mockEngine.textInputPlugin = self.mockTextInputPlugin;
 
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
 
@@ -893,7 +893,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
   OCMStub([self.mockTextInputPlugin handlePress:[OCMArg any]]).andReturn(YES);
   mockEngine.textInputPlugin = self.mockTextInputPlugin;
 
-  __strong FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:mockEngine
+  __strong FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:mockEngine
                                                                              nibName:nil
                                                                               bundle:nil];
   // Allocate the keyboard manager in the view controller by adding the internal
@@ -928,7 +928,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
   OCMStub([self.mockTextInputPlugin handlePress:[OCMArg any]]).andReturn(YES);
   OCMStub([self.mockEngine keyEventChannel]).andReturn(keyEventChannel);
 
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
 
@@ -961,7 +961,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
     return;
   }
 
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
   XCTAssertNotNil(vc);
@@ -987,7 +987,7 @@ typedef enum UIAccessibilityContrast : NSInteger {
     return;
   }
 
-  FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.mockEngine
+  FlutterViewControllerSDK* vc = [[FlutterViewControllerSDK alloc] initWithEngine:self.mockEngine
                                                                     nibName:nil
                                                                      bundle:nil];
   XCTAssertNotNil(vc);

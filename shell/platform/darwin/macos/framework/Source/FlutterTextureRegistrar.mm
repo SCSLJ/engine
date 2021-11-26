@@ -9,7 +9,7 @@
 @implementation FlutterTextureRegistrar {
   __weak id<FlutterTextureRegistrarDelegate> _delegate;
 
-  __weak FlutterEngine* _flutterEngine;
+  __weak FlutterEngineSDK* _flutterEngine;
 
   // A mapping of textureID to internal FlutterExternalTextureGL adapter.
   NSMutableDictionary<NSNumber*, id<FlutterMacOSExternalTexture>>* _textures;
@@ -22,7 +22,7 @@
 }
 
 - (instancetype)initWithDelegate:(id<FlutterTextureRegistrarDelegate>)delegate
-                          engine:(FlutterEngine*)engine {
+                          engine:(FlutterEngineSDK*)engine {
   if (self = [super init]) {
     _delegate = delegate;
     _flutterEngine = engine;

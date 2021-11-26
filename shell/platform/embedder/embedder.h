@@ -225,7 +225,7 @@ typedef enum {
   kFlutterTextDirectionLTR = 2,
 } FlutterTextDirection;
 
-typedef struct _FlutterEngine* FLUTTER_API_SYMBOL(FlutterEngine);
+typedef struct _FlutterEngine* FLUTTER_API_SYMBOL(FlutterEngineSDK);
 
 typedef struct {
   /// horizontal scale factor
@@ -1656,7 +1656,7 @@ FlutterEngineResult FlutterEngineRun(size_t version,
                                      const FlutterRendererConfig* config,
                                      const FlutterProjectArgs* args,
                                      void* user_data,
-                                     FLUTTER_API_SYMBOL(FlutterEngine) *
+                                     FLUTTER_API_SYMBOL(FlutterEngineSDK) *
                                          engine_out);
 
 //------------------------------------------------------------------------------
@@ -1665,19 +1665,19 @@ FlutterEngineResult FlutterEngineRun(size_t version,
 ///             Making additional calls with this handle is undefined behavior.
 ///
 /// @note       This de-initializes the Flutter engine instance (via an implicit
-///             call to `FlutterEngineDeinitialize`) if necessary.
+///             call to `FlutterEngineSDKDeinitialize`) if necessary.
 ///
 /// @param[in]  engine  The Flutter engine instance to collect.
 ///
 /// @return     The result of the call to shutdown the Flutter engine instance.
 ///
 FLUTTER_EXPORT
-FlutterEngineResult FlutterEngineShutdown(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineShutdown(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                               engine);
 
 //------------------------------------------------------------------------------
 /// @brief      Initialize a Flutter engine instance. This does not run the
-///             Flutter application code till the `FlutterEngineRunInitialized`
+///             Flutter application code till the `FlutterEngineSDKRunInitialized`
 ///             call is made. Besides Flutter application code, no tasks are
 ///             scheduled on embedder managed task runners either. This allows
 ///             embedders providing custom task runners to the Flutter engine to
@@ -1699,7 +1699,7 @@ FlutterEngineResult FlutterEngineInitialize(size_t version,
                                             const FlutterRendererConfig* config,
                                             const FlutterProjectArgs* args,
                                             void* user_data,
-                                            FLUTTER_API_SYMBOL(FlutterEngine) *
+                                            FLUTTER_API_SYMBOL(FlutterEngineSDK) *
                                                 engine_out);
 
 //------------------------------------------------------------------------------
@@ -1707,14 +1707,14 @@ FlutterEngineResult FlutterEngineInitialize(size_t version,
 ///             embedder is also guaranteed that no more calls to post tasks
 ///             onto custom task runners specified by the embedder are made. The
 ///             Flutter engine handle still needs to be collected via a call to
-///             `FlutterEngineShutdown`.
+///             `FlutterEngineSDKShutdown`.
 ///
 /// @param[in]  engine    The running engine instance to de-initialize.
 ///
 /// @return     The result of the call to de-initialize the Flutter engine.
 ///
 FLUTTER_EXPORT
-FlutterEngineResult FlutterEngineDeinitialize(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineDeinitialize(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                                   engine);
 
 //------------------------------------------------------------------------------
@@ -1732,16 +1732,16 @@ FlutterEngineResult FlutterEngineDeinitialize(FLUTTER_API_SYMBOL(FlutterEngine)
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineRunInitialized(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineSendWindowMetricsEvent(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterWindowMetricsEvent* event);
 
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineSendPointerEvent(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPointerEvent* events,
     size_t events_count);
 
@@ -1765,7 +1765,7 @@ FlutterEngineResult FlutterEngineSendPointerEvent(
 /// @return     The result of the call.
 ///
 FLUTTER_EXPORT
-FlutterEngineResult FlutterEngineSendKeyEvent(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineSendKeyEvent(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                                   engine,
                                               const FlutterKeyEvent* event,
                                               FlutterKeyEventCallback callback,
@@ -1773,7 +1773,7 @@ FlutterEngineResult FlutterEngineSendKeyEvent(FLUTTER_API_SYMBOL(FlutterEngine)
 
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineSendPlatformMessage(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPlatformMessage* message);
 
 //------------------------------------------------------------------------------
@@ -1807,7 +1807,7 @@ FlutterEngineResult FlutterEngineSendPlatformMessage(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterPlatformMessageCreateResponseHandle(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterDataCallback data_callback,
     void* user_data,
     FlutterPlatformMessageResponseHandle** response_out);
@@ -1827,7 +1827,7 @@ FlutterEngineResult FlutterPlatformMessageCreateResponseHandle(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterPlatformMessageReleaseResponseHandle(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterPlatformMessageResponseHandle* response);
 
 //------------------------------------------------------------------------------
@@ -1844,7 +1844,7 @@ FlutterEngineResult FlutterPlatformMessageReleaseResponseHandle(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineSendPlatformMessageResponse(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPlatformMessageResponseHandle* handle,
     const uint8_t* data,
     size_t data_length);
@@ -1886,7 +1886,7 @@ FlutterEngineResult __FlutterEngineFlushPendingTasksNow();
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineRegisterExternalTexture(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier);
 
 //------------------------------------------------------------------------------
@@ -1903,7 +1903,7 @@ FlutterEngineResult FlutterEngineRegisterExternalTexture(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineUnregisterExternalTexture(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier);
 
 //------------------------------------------------------------------------------
@@ -1921,7 +1921,7 @@ FlutterEngineResult FlutterEngineUnregisterExternalTexture(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineMarkExternalTextureFrameAvailable(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier);
 
 //------------------------------------------------------------------------------
@@ -1938,7 +1938,7 @@ FlutterEngineResult FlutterEngineMarkExternalTextureFrameAvailable(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineUpdateSemanticsEnabled(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     bool enabled);
 
 //------------------------------------------------------------------------------
@@ -1951,7 +1951,7 @@ FlutterEngineResult FlutterEngineUpdateSemanticsEnabled(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineUpdateAccessibilityFeatures(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterAccessibilityFeature features);
 
 //------------------------------------------------------------------------------
@@ -1967,7 +1967,7 @@ FlutterEngineResult FlutterEngineUpdateAccessibilityFeatures(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineDispatchSemanticsAction(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     uint64_t id,
     FlutterSemanticsAction action,
     const uint8_t* data,
@@ -2005,7 +2005,7 @@ FlutterEngineResult FlutterEngineDispatchSemanticsAction(
 /// @return     The result of the call.
 ///
 FLUTTER_EXPORT
-FlutterEngineResult FlutterEngineOnVsync(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineOnVsync(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                              engine,
                                          intptr_t baton,
                                          uint64_t frame_start_time_nanos,
@@ -2020,7 +2020,7 @@ FlutterEngineResult FlutterEngineOnVsync(FLUTTER_API_SYMBOL(FlutterEngine)
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineReloadSystemFonts(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 
 //------------------------------------------------------------------------------
 /// @brief      A profiling utility. Logs a trace duration begin event to the
@@ -2075,7 +2075,7 @@ void FlutterEngineTraceEventInstant(const char* name);
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEnginePostRenderThreadTask(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     VoidCallback callback,
     void* callback_data);
 
@@ -2101,7 +2101,7 @@ uint64_t FlutterEngineGetCurrentTime();
 /// @return     The result of the call.
 ///
 FLUTTER_EXPORT
-FlutterEngineResult FlutterEngineRunTask(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineRunTask(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                              engine,
                                          const FlutterTask* task);
 
@@ -2118,7 +2118,7 @@ FlutterEngineResult FlutterEngineRunTask(FLUTTER_API_SYMBOL(FlutterEngine)
 /// @return     Whether the locale updates were applied.
 ///
 FLUTTER_EXPORT
-FlutterEngineResult FlutterEngineUpdateLocales(FLUTTER_API_SYMBOL(FlutterEngine)
+FlutterEngineResult FlutterEngineUpdateLocales(FLUTTER_API_SYMBOL(FlutterEngineSDK)
                                                    engine,
                                                const FlutterLocale** locales,
                                                size_t locales_count);
@@ -2170,7 +2170,7 @@ bool FlutterEngineRunsAOTCompiledDartCode(void);
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEnginePostDartObject(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterEngineDartPort port,
     const FlutterEngineDartObject* object);
 
@@ -2193,7 +2193,7 @@ FlutterEngineResult FlutterEnginePostDartObject(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineNotifyLowMemoryWarning(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 
 //------------------------------------------------------------------------------
 /// @brief      Schedule a callback to be run on all engine managed threads.
@@ -2230,7 +2230,7 @@ FlutterEngineResult FlutterEngineNotifyLowMemoryWarning(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEnginePostCallbackOnAllNativeThreads(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterNativeThreadCallback callback,
     void* user_data);
 
@@ -2246,7 +2246,7 @@ FlutterEngineResult FlutterEnginePostCallbackOnAllNativeThreads(
 ///
 FLUTTER_EXPORT
 FlutterEngineResult FlutterEngineNotifyDisplayUpdate(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterEngineDisplaysUpdateType update_type,
     const FlutterEngineDisplay* displays,
     size_t display_count);
@@ -2264,106 +2264,106 @@ typedef FlutterEngineResult (*FlutterEngineRunFnPtr)(
     const FlutterRendererConfig* config,
     const FlutterProjectArgs* args,
     void* user_data,
-    FLUTTER_API_SYMBOL(FlutterEngine) * engine_out);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) * engine_out);
 typedef FlutterEngineResult (*FlutterEngineShutdownFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 typedef FlutterEngineResult (*FlutterEngineInitializeFnPtr)(
     size_t version,
     const FlutterRendererConfig* config,
     const FlutterProjectArgs* args,
     void* user_data,
-    FLUTTER_API_SYMBOL(FlutterEngine) * engine_out);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) * engine_out);
 typedef FlutterEngineResult (*FlutterEngineDeinitializeFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 typedef FlutterEngineResult (*FlutterEngineRunInitializedFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 typedef FlutterEngineResult (*FlutterEngineSendWindowMetricsEventFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterWindowMetricsEvent* event);
 typedef FlutterEngineResult (*FlutterEngineSendPointerEventFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPointerEvent* events,
     size_t events_count);
 typedef FlutterEngineResult (*FlutterEngineSendKeyEventFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterKeyEvent* event,
     FlutterKeyEventCallback callback,
     void* user_data);
 typedef FlutterEngineResult (*FlutterEngineSendPlatformMessageFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPlatformMessage* message);
 typedef FlutterEngineResult (
     *FlutterEnginePlatformMessageCreateResponseHandleFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterDataCallback data_callback,
     void* user_data,
     FlutterPlatformMessageResponseHandle** response_out);
 typedef FlutterEngineResult (
     *FlutterEnginePlatformMessageReleaseResponseHandleFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterPlatformMessageResponseHandle* response);
 typedef FlutterEngineResult (*FlutterEngineSendPlatformMessageResponseFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterPlatformMessageResponseHandle* handle,
     const uint8_t* data,
     size_t data_length);
 typedef FlutterEngineResult (*FlutterEngineRegisterExternalTextureFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier);
 typedef FlutterEngineResult (*FlutterEngineUnregisterExternalTextureFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier);
 typedef FlutterEngineResult (
     *FlutterEngineMarkExternalTextureFrameAvailableFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     int64_t texture_identifier);
 typedef FlutterEngineResult (*FlutterEngineUpdateSemanticsEnabledFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     bool enabled);
 typedef FlutterEngineResult (*FlutterEngineUpdateAccessibilityFeaturesFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterAccessibilityFeature features);
 typedef FlutterEngineResult (*FlutterEngineDispatchSemanticsActionFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     uint64_t id,
     FlutterSemanticsAction action,
     const uint8_t* data,
     size_t data_length);
 typedef FlutterEngineResult (*FlutterEngineOnVsyncFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     intptr_t baton,
     uint64_t frame_start_time_nanos,
     uint64_t frame_target_time_nanos);
 typedef FlutterEngineResult (*FlutterEngineReloadSystemFontsFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 typedef void (*FlutterEngineTraceEventDurationBeginFnPtr)(const char* name);
 typedef void (*FlutterEngineTraceEventDurationEndFnPtr)(const char* name);
 typedef void (*FlutterEngineTraceEventInstantFnPtr)(const char* name);
 typedef FlutterEngineResult (*FlutterEnginePostRenderThreadTaskFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     VoidCallback callback,
     void* callback_data);
 typedef uint64_t (*FlutterEngineGetCurrentTimeFnPtr)();
 typedef FlutterEngineResult (*FlutterEngineRunTaskFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterTask* task);
 typedef FlutterEngineResult (*FlutterEngineUpdateLocalesFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     const FlutterLocale** locales,
     size_t locales_count);
 typedef bool (*FlutterEngineRunsAOTCompiledDartCodeFnPtr)(void);
 typedef FlutterEngineResult (*FlutterEnginePostDartObjectFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterEngineDartPort port,
     const FlutterEngineDartObject* object);
 typedef FlutterEngineResult (*FlutterEngineNotifyLowMemoryWarningFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine);
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine);
 typedef FlutterEngineResult (*FlutterEnginePostCallbackOnAllNativeThreadsFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterNativeThreadCallback callback,
     void* user_data);
 typedef FlutterEngineResult (*FlutterEngineNotifyDisplayUpdateFnPtr)(
-    FLUTTER_API_SYMBOL(FlutterEngine) engine,
+    FLUTTER_API_SYMBOL(FlutterEngineSDK) engine,
     FlutterEngineDisplaysUpdateType update_type,
     const FlutterEngineDisplay* displays,
     size_t display_count);

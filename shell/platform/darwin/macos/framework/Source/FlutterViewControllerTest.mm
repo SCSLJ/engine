@@ -32,12 +32,12 @@ namespace flutter::testing {
 namespace {
 
 // Allocates and returns an engine configured for the test fixture resource configuration.
-FlutterEngine* CreateTestEngine() {
+FlutterEngineSDK* CreateTestEngine() {
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
-  return [[FlutterEngine alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
+  return [[FlutterEngineSDK alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
 }
 
 NSResponder* mockResponder() {
@@ -110,7 +110,7 @@ TEST(FlutterViewController, HasViewThatHidesOtherViewsInAccessibility) {
 }
 
 TEST(FlutterViewController, SetsFlutterViewFirstResponderWhenAccessibilityDisabled) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
@@ -181,7 +181,7 @@ TEST(FlutterViewControllerTest, TestKeyboardIsRestartedOnEngineRestart) {
 @implementation FlutterViewControllerTestObjC
 
 - (bool)testKeyEventsAreSentToFramework {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])
@@ -219,7 +219,7 @@ TEST(FlutterViewControllerTest, TestKeyboardIsRestartedOnEngineRestart) {
 }
 
 - (bool)testKeyEventsArePropagatedIfNotHandled {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])
@@ -274,7 +274,7 @@ TEST(FlutterViewControllerTest, TestKeyboardIsRestartedOnEngineRestart) {
 }
 
 - (bool)testFlagsChangedEventsArePropagatedIfNotHandled {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])
@@ -327,7 +327,7 @@ TEST(FlutterViewControllerTest, TestKeyboardIsRestartedOnEngineRestart) {
 }
 
 - (bool)testKeyEventsAreNotPropagatedIfHandled {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])
@@ -382,7 +382,7 @@ TEST(FlutterViewControllerTest, TestKeyboardIsRestartedOnEngineRestart) {
 }
 
 - (bool)testPerformKeyEquivalentSynthesizesKeyUp {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])
@@ -462,7 +462,7 @@ TEST(FlutterViewControllerTest, TestKeyboardIsRestartedOnEngineRestart) {
 }
 
 - (bool)testKeyboardIsRestartedOnEngineRestart {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])

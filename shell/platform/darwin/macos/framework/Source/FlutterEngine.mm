@@ -35,7 +35,7 @@ static FlutterLocale FlutterLocaleFromNSLocale(NSLocale* locale) {
 
 #pragma mark -
 
-// Records an active handler of the messenger (FlutterEngine) that listens to
+// Records an active handler of the messenger (FlutterEngineSDK) that listens to
 // platform messages on a given channel.
 @interface FlutterEngineHandlerInfo : NSObject
 
@@ -61,9 +61,9 @@ static FlutterLocale FlutterLocaleFromNSLocale(NSLocale* locale) {
 #pragma mark -
 
 /**
- * Private interface declaration for FlutterEngine.
+ * Private interface declaration for FlutterEngineSDK.
  */
-@interface FlutterEngine () <FlutterBinaryMessenger>
+@interface FlutterEngineSDK () <FlutterBinaryMessenger>
 
 /**
  * Sends the list of user-preferred locales to the Flutter engine.
@@ -104,15 +104,15 @@ static FlutterLocale FlutterLocaleFromNSLocale(NSLocale* locale) {
  */
 @interface FlutterEngineRegistrar : NSObject <FlutterPluginRegistrar>
 - (instancetype)initWithPlugin:(nonnull NSString*)pluginKey
-                 flutterEngine:(nonnull FlutterEngine*)flutterEngine;
+                 flutterEngine:(nonnull FlutterEngineSDK*)flutterEngine;
 @end
 
 @implementation FlutterEngineRegistrar {
   NSString* _pluginKey;
-  FlutterEngine* _flutterEngine;
+  FlutterEngineSDK* _flutterEngine;
 }
 
-- (instancetype)initWithPlugin:(NSString*)pluginKey flutterEngine:(FlutterEngine*)flutterEngine {
+- (instancetype)initWithPlugin:(NSString*)pluginKey flutterEngine:(FlutterEngineSDK*)flutterEngine {
   self = [super init];
   if (self) {
     _pluginKey = [pluginKey copy];
@@ -150,15 +150,15 @@ static FlutterLocale FlutterLocaleFromNSLocale(NSLocale* locale) {
 // Callbacks provided to the engine. See the called methods for documentation.
 #pragma mark - Static methods provided to engine configuration
 
-static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngine* engine) {
+static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngineSDK* engine) {
   [engine engineCallbackOnPlatformMessage:message];
 }
 
 #pragma mark -
 
-@implementation FlutterEngine {
+@implementation FlutterEngineSDK {
   // The embedding-API-level engine object.
-  FLUTTER_API_SYMBOL(FlutterEngine) _engine;
+  FLUTTER_API_SYMBOL(FlutterEngineSDK) _engine;
 
   // The private member for accessibility.
   std::shared_ptr<flutter::AccessibilityBridge> _bridge;
@@ -263,12 +263,12 @@ static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngi
   flutterArguments.platform_message_callback = (FlutterPlatformMessageCallback)OnPlatformMessage;
   flutterArguments.update_semantics_node_callback = [](const FlutterSemanticsNode* node,
                                                        void* user_data) {
-    FlutterEngine* engine = (__bridge FlutterEngine*)user_data;
+    FlutterEngineSDK* engine = (__bridge FlutterEngineSDK*)user_data;
     [engine updateSemanticsNode:node];
   };
   flutterArguments.update_semantics_custom_action_callback =
       [](const FlutterSemanticsCustomAction* action, void* user_data) {
-        FlutterEngine* engine = (__bridge FlutterEngine*)user_data;
+        FlutterEngineSDK* engine = (__bridge FlutterEngineSDK*)user_data;
         [engine updateSemanticsCustomActions:action];
       };
   flutterArguments.custom_dart_entrypoint = entrypoint.UTF8String;
@@ -286,7 +286,7 @@ static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngi
       },
       .post_task_callback = [](FlutterTask task, uint64_t target_time_nanos,
                                void* user_data) -> void {
-        [((__bridge FlutterEngine*)(user_data)) postMainThreadTask:task
+        [((__bridge FlutterEngineSDK*)(user_data)) postMainThreadTask:task
                                            targetTimeInNanoseconds:target_time_nanos];
       },
       .identifier = ++sTaskRunnerIdentifiers,
@@ -305,7 +305,7 @@ static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngi
   flutterArguments.compositor = [self createFlutterCompositor];
 
   flutterArguments.on_pre_engine_restart_callback = [](void* user_data) {
-    FlutterEngine* engine = (__bridge FlutterEngine*)user_data;
+    FlutterEngineSDK* engine = (__bridge FlutterEngineSDK*)user_data;
     [engine engineCallbackOnPreEngineRestart];
   };
 
@@ -379,7 +379,7 @@ static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngi
     return nil;
   }
 
-  __weak FlutterEngine* weakSelf = self;
+  __weak FlutterEngineSDK* weakSelf = self;
 
   if ([FlutterRenderingBackend renderUsingMetal]) {
     FlutterMetalRenderer* metalRenderer = reinterpret_cast<FlutterMetalRenderer*>(_renderer);
@@ -784,9 +784,9 @@ static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngi
 - (void)postMainThreadTask:(FlutterTask)task targetTimeInNanoseconds:(uint64_t)targetTime {
   const auto engine_time = _embedderAPI.GetCurrentTime();
 
-  __weak FlutterEngine* weak_self = self;
+  __weak FlutterEngineSDK* weak_self = self;
   auto worker = ^{
-    FlutterEngine* strong_self = weak_self;
+    FlutterEngineSDK* strong_self = weak_self;
     if (strong_self && strong_self->_engine) {
       auto result = _embedderAPI.RunTask(strong_self->_engine, &task);
       if (result != kSuccess) {
@@ -804,7 +804,7 @@ static void OnPlatformMessage(const FlutterPlatformMessage* message, FlutterEngi
   }
 }
 
-// Getter used by test harness, only exposed through the FlutterEngine(Test) category
+// Getter used by test harness, only exposed through the FlutterEngineSDK(Test) category
 - (flutter::FlutterCompositor*)macOSCompositor {
   return _macOSCompositor.get();
 }

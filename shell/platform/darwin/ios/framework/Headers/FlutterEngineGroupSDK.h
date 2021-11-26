@@ -4,38 +4,38 @@
 
 #import <Foundation/Foundation.h>
 
-#import "FlutterEngine.h"
+#import "FlutterEngineSDK.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- * Represents a collection of FlutterEngines who share resources which allows
+ * Represents a collection of FlutterEngineSDKs who share resources which allows
  * them to be created with less time const and occupy less memory than just
- * creating multiple FlutterEngines.
+ * creating multiple FlutterEngineSDKs.
  *
- * Deleting a FlutterEngineGroup doesn't invalidate existing FlutterEngines, but
+ * Deleting a FlutterEngineGroupSDK doesn't invalidate existing FlutterEngines, but
  * it eliminates the possibility to create more FlutterEngines in that group.
  *
  * @warning This class is a work-in-progress and may change.
  * @see https://github.com/flutter/flutter/issues/72009
  */
 FLUTTER_DARWIN_EXPORT
-@interface FlutterEngineGroup : NSObject
+@interface FlutterEngineGroupSDK : NSObject
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
- * Initialize a new FlutterEngineGroup.
+ * Initialize a new FlutterEngineGroupSDK.
  *
  * @param name The name that will present in the threads shared across the
  * engines in this group.
- * @param project The `FlutterDartProject` that all FlutterEngines in this group
+ * @param project The `FlutterDartProjectSDK` that all FlutterEngineSDKs in this group
  * will be executing.
  */
 - (instancetype)initWithName:(NSString*)name
-                     project:(nullable FlutterDartProject*)project NS_DESIGNATED_INITIALIZER;
+                     project:(nullable FlutterDartProjectSDK*)project NS_DESIGNATED_INITIALIZER;
 
 /**
- * Creates a running `FlutterEngine` that shares components with this group.
+ * Creates a running `FlutterEngineSDK` that shares components with this group.
  *
  * @param entrypoint The name of a top-level function from a Dart library.  If this is
  *   FlutterDefaultDartEntrypoint (or nil); this will default to `main()`.  If it is not the app's
@@ -44,13 +44,13 @@ FLUTTER_DARWIN_EXPORT
  * @param libraryURI The URI of the Dart library which contains the entrypoint method.  IF nil,
  *   this will default to the same library as the `main()` function in the Dart program.
  *
- * @see FlutterEngineGroup
+ * @see FlutterEngineGroupSDK
  */
-- (FlutterEngine*)makeEngineWithEntrypoint:(nullable NSString*)entrypoint
+- (FlutterEngineSDK*)makeEngineWithEntrypoint:(nullable NSString*)entrypoint
                                 libraryURI:(nullable NSString*)libraryURI;
 
 /**
- * Creates a running `FlutterEngine` that shares components with this group.
+ * Creates a running `FlutterEngineSDK` that shares components with this group.
  *
  * @param entrypoint The name of a top-level function from a Dart library.  If this is
  *   FlutterDefaultDartEntrypoint (or nil); this will default to `main()`.  If it is not the app's
@@ -61,9 +61,9 @@ FLUTTER_DARWIN_EXPORT
  * @param initialRoute The name of the initial Flutter `Navigator` `Route` to load. If this is
  *   FlutterDefaultInitialRoute (or nil), it will default to the "/" route.
  *
- * @see FlutterEngineGroup
+ * @see FlutterEngineGroupSDK
  */
-- (FlutterEngine*)makeEngineWithEntrypoint:(nullable NSString*)entrypoint
+- (FlutterEngineSDK*)makeEngineWithEntrypoint:(nullable NSString*)entrypoint
                                 libraryURI:(nullable NSString*)libraryURI
                               initialRoute:(nullable NSString*)initialRoute;
 @end

@@ -12,7 +12,7 @@
 #import "flutter/shell/platform/darwin/macos/framework/Source/FlutterCompositor.h"
 #import "flutter/shell/platform/darwin/macos/framework/Source/FlutterRenderer.h"
 
-@interface FlutterEngine ()
+@interface FlutterEngineSDK ()
 
 /**
  * True if the engine is currently running.

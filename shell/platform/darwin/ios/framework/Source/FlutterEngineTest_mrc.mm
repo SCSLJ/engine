@@ -12,7 +12,7 @@
 
 FLUTTER_ASSERT_NOT_ARC
 
-@interface FlutterEngineSpy : FlutterEngine
+@interface FlutterEngineSpy : FlutterEngineSDK
 @property(nonatomic) BOOL ensureSemanticsEnabledCalled;
 @end
 
@@ -36,9 +36,9 @@ FLUTTER_ASSERT_NOT_ARC
 }
 
 - (void)testSpawnsShareGpuContext {
-  FlutterEngine* engine = [[FlutterEngine alloc] initWithName:@"foobar"];
+  FlutterEngineSDK* engine = [[FlutterEngineSDK alloc] initWithName:@"foobar"];
   [engine run];
-  FlutterEngine* spawn = [engine spawnWithEntrypoint:nil libraryURI:nil initialRoute:nil];
+  FlutterEngineSDK* spawn = [engine spawnWithEntrypoint:nil libraryURI:nil initialRoute:nil];
   XCTAssertNotNil(spawn);
   XCTAssertTrue([engine iosPlatformView] != nullptr);
   XCTAssertTrue([spawn iosPlatformView] != nullptr);

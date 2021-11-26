@@ -9,20 +9,20 @@
 #include <sys/cdefs.h>
 
 #import "FlutterBinaryMessenger.h"
-#import "FlutterDartProject.h"
-#import "FlutterEngine.h"
+#import "FlutterDartProjectSDK.h"
+#import "FlutterEngineSDK.h"
 #import "FlutterMacros.h"
-#import "FlutterPlugin.h"
+#import "FlutterPluginSDK.h"
 #import "FlutterTexture.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class FlutterEngine;
+@class FlutterEngineSDK;
 
 /**
  * The name used for semantic update notifications via `NSNotificationCenter`.
  *
- * The object passed as the sender is the `FlutterViewController` associated
+ * The object passed as the sender is the `FlutterViewControllerSDK` associated
  * with the update.
  */
 FLUTTER_DARWIN_EXPORT
@@ -32,76 +32,76 @@ extern NSNotificationName const FlutterSemanticsUpdateNotification;
  * A `UIViewController` implementation for Flutter views.
  *
  * Dart execution, channel communication, texture registration, and plugin registration are all
- * handled by `FlutterEngine`. Calls on this class to those members all proxy through to the
- * `FlutterEngine` attached FlutterViewController.
+ * handled by `FlutterEngineSDK`. Calls on this class to those members all proxy through to the
+ * `FlutterEngineSDK` attached FlutterViewControllerSDK.
  *
- * A FlutterViewController can be initialized either with an already-running `FlutterEngine` via the
- * `initWithEngine:` initializer, or it can be initialized with a `FlutterDartProject` that will be
- * used to implicitly spin up a new `FlutterEngine`. Creating a `FlutterEngine` before showing a
- * FlutterViewController can be used to pre-initialize the Dart VM and to prepare the isolate in
+ * A FlutterViewControllerSDK can be initialized either with an already-running `FlutterEngineSDK` via the
+ * `initWithEngine:` initializer, or it can be initialized with a `FlutterDartProjectSDK` that will be
+ * used to implicitly spin up a new `FlutterEngineSDK`. Creating a `FlutterEngineSDK` before showing a
+ * FlutterViewControllerSDK can be used to pre-initialize the Dart VM and to prepare the isolate in
  * order to reduce the latency to the first rendered frame. See
  * https://flutter.dev/docs/development/add-to-app/performance for more details on loading
  * latency.
  *
- * Holding a `FlutterEngine` independently of FlutterViewControllers can also be used to not to lose
+ * Holding a `FlutterEngineSDK` independently of FlutterViewControllerSDKs can also be used to not to lose
  * Dart-related state and asynchronous tasks when navigating back and forth between a
- * FlutterViewController and other `UIViewController`s.
+ * FlutterViewControllerSDK and other `UIViewController`s.
  */
 FLUTTER_DARWIN_EXPORT
 #ifdef __IPHONE_13_4
-@interface FlutterViewController
-    : UIViewController <FlutterTextureRegistry, FlutterPluginRegistry, UIPointerInteractionDelegate>
+@interface FlutterViewControllerSDK
+    : UIViewController <FlutterTextureRegistry, FlutterPluginRegistrySDK, UIPointerInteractionDelegate>
 #else
-@interface FlutterViewController : UIViewController <FlutterTextureRegistry, FlutterPluginRegistry>
+@interface FlutterViewControllerSDK : UIViewController <FlutterTextureRegistry, FlutterPluginRegistrySDK>
 #endif
 
 /**
- * Initializes this FlutterViewController with the specified `FlutterEngine`.
+ * Initializes this FlutterViewControllerSDK with the specified `FlutterEngineSDK`.
  *
  * The initialized viewcontroller will attach itself to the engine as part of this process.
  *
- * @param engine The `FlutterEngine` instance to attach to. Cannot be nil.
+ * @param engine The `FlutterEngineSDK` instance to attach to. Cannot be nil.
  * @param nibName The NIB name to initialize this UIViewController with.
  * @param nibBundle The NIB bundle.
  */
-- (instancetype)initWithEngine:(FlutterEngine*)engine
+- (instancetype)initWithEngine:(FlutterEngineSDK*)engine
                        nibName:(nullable NSString*)nibName
                         bundle:(nullable NSBundle*)nibBundle NS_DESIGNATED_INITIALIZER;
 
 /**
- * Initializes a new FlutterViewController and `FlutterEngine` with the specified
- * `FlutterDartProject`.
+ * Initializes a new FlutterViewControllerSDK and `FlutterEngineSDK` with the specified
+ * `FlutterDartProjectSDK`.
  *
- * This will implicitly create a new `FlutterEngine` which is retrievable via the `engine` property
+ * This will implicitly create a new `FlutterEngineSDK` which is retrievable via the `engine` property
  * after initialization.
  *
- * @param project The `FlutterDartProject` to initialize the `FlutterEngine` with.
+ * @param project The `FlutterDartProjectSDK` to initialize the `FlutterEngineSDK` with.
  * @param nibName The NIB name to initialize this UIViewController with.
  * @param nibBundle The NIB bundle.
  */
-- (instancetype)initWithProject:(nullable FlutterDartProject*)project
+- (instancetype)initWithProject:(nullable FlutterDartProjectSDK*)project
                         nibName:(nullable NSString*)nibName
                          bundle:(nullable NSBundle*)nibBundle NS_DESIGNATED_INITIALIZER;
 
 /**
- * Initializes a new FlutterViewController and `FlutterEngine` with the specified
- * `FlutterDartProject` and `initialRoute`.
+ * Initializes a new FlutterViewControllerSDK and `FlutterEngineSDK` with the specified
+ * `FlutterDartProjectSDK` and `initialRoute`.
  *
- * This will implicitly create a new `FlutterEngine` which is retrievable via the `engine` property
+ * This will implicitly create a new `FlutterEngineSDK` which is retrievable via the `engine` property
  * after initialization.
  *
- * @param project The `FlutterDartProject` to initialize the `FlutterEngine` with.
+ * @param project The `FlutterDartProjectSDK` to initialize the `FlutterEngineSDK` with.
  * @param initialRoute The initial `Navigator` route to load.
  * @param nibName The NIB name to initialize this UIViewController with.
  * @param nibBundle The NIB bundle.
  */
-- (instancetype)initWithProject:(nullable FlutterDartProject*)project
+- (instancetype)initWithProject:(nullable FlutterDartProjectSDK*)project
                    initialRoute:(nullable NSString*)initialRoute
                         nibName:(nullable NSString*)nibName
                          bundle:(nullable NSBundle*)nibBundle NS_DESIGNATED_INITIALIZER;
 
 /**
- * Initializer that is called from loading a FlutterViewController from a XIB.
+ * Initializer that is called from loading a FlutterViewControllerSDK from a XIB.
  *
  * See also:
  * https://developer.apple.com/documentation/foundation/nscoding/1416145-initwithcoder?language=objc
@@ -145,7 +145,7 @@ FLUTTER_DARWIN_EXPORT
  * runtime hasn't yet started. The default is "/".
  *
  * This method must be called immediately after `initWithProject` and has no
- * effect when using `initWithEngine` if the `FlutterEngine` has already been
+ * effect when using `initWithEngine` if the `FlutterEngineSDK` has already been
  * run.
  *
  * Setting this after the Flutter started running has no effect. See `pushRoute`
@@ -159,7 +159,7 @@ FLUTTER_DARWIN_EXPORT
  * @param route The name of the first route to show.
  */
 - (void)setInitialRoute:(NSString*)route
-    FLUTTER_DEPRECATED("Use FlutterViewController initializer to specify initial route");
+    FLUTTER_DEPRECATED("Use FlutterViewControllerSDK initializer to specify initial route");
 
 /**
  * Instructs the Flutter Navigator (if any) to go back.
@@ -175,9 +175,9 @@ FLUTTER_DARWIN_EXPORT
 - (void)pushRoute:(NSString*)route;
 
 /**
- * The `FlutterPluginRegistry` used by this FlutterViewController.
+ * The `FlutterPluginRegistrySDK` used by this FlutterViewControllerSDK.
  */
-- (id<FlutterPluginRegistry>)pluginRegistry;
+- (id<FlutterPluginRegistrySDK>)pluginRegistry;
 
 /**
  * True if at least one frame has rendered and the ViewController has appeared.
@@ -217,28 +217,28 @@ FLUTTER_DARWIN_EXPORT
 @property(nonatomic, getter=isViewOpaque) BOOL viewOpaque;
 
 /**
- * The `FlutterEngine` instance for this view controller. This could be the engine this
- * `FlutterViewController` is initialized with or a new `FlutterEngine` implicitly created if
+ * The `FlutterEngineSDK` instance for this view controller. This could be the engine this
+ * `FlutterViewControllerSDK` is initialized with or a new `FlutterEngineSDK` implicitly created if
  * no engine was supplied during initialization.
  */
-@property(weak, nonatomic, readonly) FlutterEngine* engine;
+@property(weak, nonatomic, readonly) FlutterEngineSDK* engine;
 
 /**
- * The `FlutterBinaryMessenger` associated with this FlutterViewController (used for communicating
+ * The `FlutterBinaryMessenger` associated with this FlutterViewControllerSDK (used for communicating
  * with channels).
  *
- * This is just a convenient way to get the |FlutterEngine|'s binary messenger.
+ * This is just a convenient way to get the |FlutterEngineSDK|'s binary messenger.
  */
 @property(nonatomic, readonly) NSObject<FlutterBinaryMessenger>* binaryMessenger;
 
 /**
- * If the `FlutterViewController` creates a `FlutterEngine`, this property
- * determines if that `FlutterEngine` has `allowHeadlessExecution` set.
+ * If the `FlutterViewControllerSDK` creates a `FlutterEngineSDK`, this property
+ * determines if that `FlutterEngineSDK` has `allowHeadlessExecution` set.
  *
  * The intention is that this is used with the XIB.  Otherwise, a
- * `FlutterEngine` can just be sent to the init methods.
+ * `FlutterEngineSDK` can just be sent to the init methods.
  *
- * See also: `-[FlutterEngine initWithName:project:allowHeadlessExecution:]`
+ * See also: `-[FlutterEngineSDK initWithName:project:allowHeadlessExecution:]`
  */
 @property(nonatomic, readonly) BOOL engineAllowHeadlessExecution;
 

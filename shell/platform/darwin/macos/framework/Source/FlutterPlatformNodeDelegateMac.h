@@ -20,7 +20,7 @@ namespace flutter {
 class FlutterPlatformNodeDelegateMac : public FlutterPlatformNodeDelegate {
  public:
   explicit FlutterPlatformNodeDelegateMac(
-      __weak FlutterEngine* engine,
+      __weak FlutterEngineSDK* engine,
       __weak FlutterViewController* view_controller);
   virtual ~FlutterPlatformNodeDelegateMac();
 
@@ -49,7 +49,7 @@ class FlutterPlatformNodeDelegateMac : public FlutterPlatformNodeDelegate {
 
  private:
   ui::AXPlatformNode* ax_platform_node_;
-  __weak FlutterEngine* engine_;
+  __weak FlutterEngineSDK* engine_;
   __weak FlutterViewController* view_controller_;
 
   gfx::RectF ConvertBoundsFromLocalToScreen(

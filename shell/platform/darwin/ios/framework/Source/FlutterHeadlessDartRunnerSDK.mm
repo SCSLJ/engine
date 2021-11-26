@@ -4,7 +4,7 @@
 
 #define FML_USED_ON_EMBEDDER
 
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterHeadlessDartRunner.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterHeadlessDartRunnerSDK.h"
 
 #include <memory>
 
@@ -17,24 +17,24 @@
 #include "flutter/shell/common/switches.h"
 #include "flutter/shell/common/thread_host.h"
 #import "flutter/shell/platform/darwin/common/command_line.h"
-#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPlugin.h"
+#import "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPluginSDK.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterDartProject_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/FlutterEngine_Internal.h"
 #import "flutter/shell/platform/darwin/ios/framework/Source/platform_message_response_darwin.h"
 #import "flutter/shell/platform/darwin/ios/platform_view_ios.h"
 
-@implementation FlutterHeadlessDartRunner {
+@implementation FlutterHeadlessDartRunnerSDK {
 }
 
-- (instancetype)initWithName:(NSString*)labelPrefix project:(FlutterDartProject*)projectOrNil {
+- (instancetype)initWithName:(NSString*)labelPrefix project:(FlutterDartProjectSDK*)projectOrNil {
   return [self initWithName:labelPrefix project:projectOrNil allowHeadlessExecution:YES];
 }
 
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(FlutterDartProject*)projectOrNil
+                     project:(FlutterDartProjectSDK*)projectOrNil
       allowHeadlessExecution:(BOOL)allowHeadlessExecution {
   NSAssert(allowHeadlessExecution == YES,
-           @"Cannot initialize a FlutterHeadlessDartRunner without headless execution.");
+           @"Cannot initialize a FlutterHeadlessDartRunnerSDK without headless execution.");
   return [self initWithName:labelPrefix
                      project:projectOrNil
       allowHeadlessExecution:allowHeadlessExecution
@@ -42,11 +42,11 @@
 }
 
 - (instancetype)initWithName:(NSString*)labelPrefix
-                     project:(FlutterDartProject*)projectOrNil
+                     project:(FlutterDartProjectSDK*)projectOrNil
       allowHeadlessExecution:(BOOL)allowHeadlessExecution
           restorationEnabled:(BOOL)restorationEnabled {
   NSAssert(allowHeadlessExecution == YES,
-           @"Cannot initialize a FlutterHeadlessDartRunner without headless execution.");
+           @"Cannot initialize a FlutterHeadlessDartRunnerSDK without headless execution.");
   return [super initWithName:labelPrefix
                      project:projectOrNil
       allowHeadlessExecution:allowHeadlessExecution

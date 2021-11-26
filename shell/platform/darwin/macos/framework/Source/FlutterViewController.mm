@@ -242,7 +242,7 @@ struct MouseState {
  */
 static void CommonInit(FlutterViewController* controller) {
   if (!controller->_engine) {
-    controller->_engine = [[FlutterEngine alloc] initWithName:@"io.flutter"
+    controller->_engine = [[FlutterEngineSDK alloc] initWithName:@"io.flutter"
                                                       project:controller->_project
                                        allowHeadlessExecution:NO];
   }
@@ -285,16 +285,16 @@ static void CommonInit(FlutterViewController* controller) {
   return self;
 }
 
-- (instancetype)initWithEngine:(nonnull FlutterEngine*)engine
+- (instancetype)initWithEngine:(nonnull FlutterEngineSDK*)engine
                        nibName:(nullable NSString*)nibName
                         bundle:(nullable NSBundle*)nibBundle {
   NSAssert(engine != nil, @"Engine is required");
   self = [super initWithNibName:nibName bundle:nibBundle];
   if (self) {
     if (engine.viewController) {
-      NSLog(@"The supplied FlutterEngine %@ is already used with FlutterViewController "
-             "instance %@. One instance of the FlutterEngine can only be attached to one "
-             "FlutterViewController at a time. Set FlutterEngine.viewController "
+      NSLog(@"The supplied FlutterEngineSDK %@ is already used with FlutterViewController "
+             "instance %@. One instance of the FlutterEngineSDK can only be attached to one "
+             "FlutterViewController at a time. Set FlutterEngineSDK.viewController "
              "to nil before attaching it to another FlutterViewController.",
             [engine description], [engine.viewController description]);
     }
@@ -383,7 +383,7 @@ static void CommonInit(FlutterViewController* controller) {
   }
   // Send the initial user settings such as brightness and text scale factor
   // to the engine.
-  // TODO(stuartmorgan): Move this logic to FlutterEngine.
+  // TODO(stuartmorgan): Move this logic to FlutterEngineSDK.
   [self sendInitialSettings];
   return YES;
 }

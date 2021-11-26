@@ -35,7 +35,7 @@
 @implementation FlutterInputPluginTestObjc
 
 - (bool)testEmptyCompositionRange {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])
@@ -100,7 +100,7 @@
 }
 
 - (bool)testFirstRectForCharacterRange {
-  id engineMock = OCMClassMock([FlutterEngine class]);
+  id engineMock = OCMClassMock([FlutterEngineSDK class]);
   id binaryMessengerMock = OCMProtocolMock(@protocol(FlutterBinaryMessenger));
   OCMStub(  // NOLINT(google-objc-avoid-throwing-exception)
       [engineMock binaryMessenger])
@@ -182,12 +182,12 @@ namespace flutter::testing {
 
 namespace {
 // Allocates and returns an engine configured for the text fixture resource configuration.
-FlutterEngine* CreateTestEngine() {
+FlutterEngineSDK* CreateTestEngine() {
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
              ICUDataPath:[fixtures stringByAppendingString:@"/icudtl.dat"]];
-  return [[FlutterEngine alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
+  return [[FlutterEngineSDK alloc] initWithName:@"test" project:project allowHeadlessExecution:true];
 }
 }  // namespace
 
@@ -200,7 +200,7 @@ TEST(FlutterTextInputPluginTest, TestFirstRectForCharacterRange) {
 }
 
 TEST(FlutterTextInputPluginTest, CanWorkWithFlutterTextField) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
@@ -259,7 +259,7 @@ TEST(FlutterTextInputPluginTest, CanWorkWithFlutterTextField) {
 }
 
 TEST(FlutterTextInputPluginTest, CanNotBecomeResponderIfNoViewController) {
-  FlutterEngine* engine = CreateTestEngine();
+  FlutterEngineSDK* engine = CreateTestEngine();
   NSString* fixtures = @(testing::GetFixturesPath());
   FlutterDartProject* project = [[FlutterDartProject alloc]
       initWithAssetsPath:fixtures
